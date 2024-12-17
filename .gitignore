@@ -1,0 +1,13 @@
+DESCRIPTION
+LICENSE.md
+R
+doc		
+man
+.Rbuildignore
+APRScenario.Rproj
+Meta
+.Rhistory
+LICENSE
+NAMESPACE
+.Rproj.user
+
