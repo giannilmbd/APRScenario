@@ -3,12 +3,17 @@ This package is a stab implementing [Structural scenario analysis with SVARs](ht
 
 It depends on the output of the package [bsvarSIGNs](https://github.com/bsvars/bsvarSIGNs) although it could be adapted to the output of many other packages by changing the function get_mats.R.
 
-See the application in the quarto (R) code APRScenario.qmd. 
+See the application code APRScenario.Rmd. 
 
-Download the tar.gz file and install in in R with 
+## Installation
 ```
-install.packages("<path>APRScenario_0.0.0.9000.tar.gz", repos = NULL, type = "source");
+devtools::install_github("giannilmbd/APRScenario", ref = "master")
 ```
-Use APRScenario.qmd as a template for the application. 
+You can also download the tar.gz package and install in in R with 
+```
+install.packages("<path>APRScenario_XXXX.tar.gz", repos = NULL, type = "source");
+```
+For XXXX see the latest version
+Use APRScenario.Rmd as a template for the application. 
 
 Feedbacks are welcome.
