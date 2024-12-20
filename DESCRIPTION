@@ -1,0 +1,31 @@
+Package: APRScenario
+Title: Generates conditional scenarios based on Antolin-Diaz, Petrella and Rubio-Ramirez (JME 2021) (APR)
+Version: 0.0.2.0
+Authors@R: 
+    person("Giovanni", "Lombardo", , "giannilmbd@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = ""))
+Description: This package implements the scenario analysis proposed by APR. 
+License: MIT + file LICENSE
+Imports:
+    dplyr,
+    ggplot2,
+    bsvars,
+    bsvarSIGNs,
+    lubridate,
+    zoo,
+    parallel,
+    MASS,
+    tidyr,
+    gridExtra,
+    abind,
+    psych
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Suggests: 
+    ggfortify,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+VignetteBuilder: knitr

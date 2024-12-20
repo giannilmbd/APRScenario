@@ -280,9 +280,9 @@ system('mkdir -p figures')
 
 
 ```{r Load-necessary-packages}
-<<<<<<< HEAD
+
 install.packages("../APRScenario_0.0.2.0.tar.gz", repos = NULL, type = "source")
-=======
+devtools::install_github("giannilmbd/APRScenario", ref = "master")
 # install.packages("~/Dropbox/SNB/APRScenario_0.0.0.9000.tar.gz", repos = NULL, type = "source")
 >>>>>>> main
 library(APRScenario)
@@ -351,7 +351,6 @@ irf            = bsvars::compute_impulse_responses(posterior, horizon = 40)
 {
   p<-plot_bvars(irf, significance_level = 0.32,
                 central_tendency = 'median', variable_names = varbls, shock_names = varbls)
-<<<<<<< HEAD
 
   {dev.new()
   grid::grid.newpage()  
