@@ -16,7 +16,7 @@
 #' @import dplyr
 
 SimScen<-function(mu_eps,Sigma_eps,mu_y,Sigma_y,big_b,big_M,n_sim,h,varbls){
- n_var=dim(Sigma_y)[1]
+ n_var=length(varbls)
   #draw shocks
   epsilon <- parallel::mclapply(1:n_draws, FUN = function(i) {
     # Generate n_sim samples for each draw
