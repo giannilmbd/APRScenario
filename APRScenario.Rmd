@@ -14,20 +14,6 @@ editor_options:
 ---
 
 
-=======
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
-execute:
-  cache: true
----
-
-```{r}
-library(APRScenario)
-```
->>>>>>> main
-
-
-
 ```{r setup, include=FALSE,echo=FALSE}
 knitr::opts_chunk$set(cache = TRUE, echo = FALSE, include = TRUE, warning = FALSE, comment = NA, out.width="70%", out.height="70%",fig.align = "center", dpi=100,units="cm" ,fig.height=20, fig.width=20, out.width="120%")
 ```
@@ -361,12 +347,6 @@ irf            = bsvars::compute_impulse_responses(posterior, horizon = 40)
 
 ggsave('irf_bvars.png',plot=grid_arranged_plots,device='png',path='figures',width=18,height=16,units = 'cm')
 
-  
-  # grid.arrange(p)
-
-
-ggsave('irf_bvars.png',plot=p,device='png',path='figures',width=18,height=16,units = 'cm')
-
 
 sr1<-sr %>% as.data.frame()
 rownames(sr1)<-varbls 
@@ -509,7 +489,7 @@ p <- ggplot(uncond.forc[uncond.forc$vars == varbls[1], ], aes(x = h)) +
 
 
 } # end run all block
-
+p
 ggsave('uncond_forc.png',plot=p,device='png',path='figures',width=18,height=16,units = 'cm')
 ```
 
@@ -575,9 +555,10 @@ cond.for[cond.for$hor<=0,'hist']<-0
 
 p<-plot_cond_forc(varbls[1])
 ggsave('cond_forc.png',plot=p,device='png',path='figures',width=18,height=16,units = 'cm')
-
+p
 p<-plot_cond_histo(variable=varbls[1],horizon=1)
 ggsave('cond_histo.png',plot=p,device='png',path='figures',width=18,height=16,units = 'cm')
+p
 ```
 ```{r}
 
@@ -625,6 +606,7 @@ p<-ggplot(data=test2, aes(x=hor)) +
   facet_wrap(~variable, scales = 'free_y',nrow = 3) +
   scale_color_manual('', values=c('APR'='red', 'BVARSign'='blue', 'Uncond'='green')) +
   scale_shape_manual('', values=c('APR'=4, 'BVARSign'=1, 'Uncond'=6))+theme_minimal()
+p
 ggsave('cond_forc_comp.png',plot=p,device='png',path='figures',width=18,height=16,units = 'cm')
 ```
 ```{r}
@@ -636,8 +618,7 @@ knitr::include_graphics("figures/cond_forc_comp.png")
 ```{r Kullback-Leibler measure}
 
 q<-KL(Sigma_eps,mu_eps,h)
-
-hist(q,main='KL measure (ref value 0.5)')
+hist(q[[1]],main='KL measure (ref value 0.5)')
 
 ```
 
