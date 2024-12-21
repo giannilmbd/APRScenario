@@ -9,7 +9,7 @@ See the application code APRScenario.Rmd.
 ```
 devtools::install_github("giannilmbd/APRScenario", ref = "master")
 ```
-You can also download the tar.gz package and install in in R with 
+You can also download the tar.gz package from the *tar-package branch* and install in in R with 
 ```
 install.packages("<path>APRScenario_XXXX.tar.gz", repos = NULL, type = "source");
 ```
