@@ -1,6 +1,7 @@
 .Rbuildignore
 APRScenario.Rproj
 Meta
+*.tar.gz
 .Rhistory
 LICENSE
 NAMESPACE
