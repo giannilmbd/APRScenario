@@ -4,7 +4,10 @@
 \alias{gen_mats}
 \title{gen_mats function}
 \usage{
-gen_mats()
+gen_mats(posterior = NULL)
+}
+\arguments{
+\item{posterior}{Posterior estimation results (eg from BsvarSIGNs)}
 }
 \value{
 Returns all the objects necessary for the other functions in scenario analysis (eg IRF matrix)
