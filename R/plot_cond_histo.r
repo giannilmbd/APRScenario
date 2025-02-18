@@ -2,6 +2,7 @@
 #'
 #' This function uses the conditional probability calculations (eg scenarios) and plots the histogram of the selected variable
 #'
+#' @param data data of conditional forecasts
 #' @param variable Name of variable to be plotted (string)
 #' @param horizon At which horizon (horizon<=h)
 #' @param threshold (optional) If present compute P(x>threshold)
@@ -12,7 +13,8 @@
 #'
 #' @import dplyr
 
-plot_cond_histo<-function(variable=NULL,horizon=1,threshold=NULL){
+plot_cond_histo<-function(variable=NULL,horizon=1,threshold=NULL,data=NULL){
+  y_h=data
   y_h_df<-as.data.frame(t(y_h))
   comby=paste(variable,horizon,sep='.')
 
