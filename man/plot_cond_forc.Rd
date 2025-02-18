@@ -2,16 +2,18 @@
 % Please edit documentation in R/plot_cond_forc.r
 \name{plot_cond_forc}
 \alias{plot_cond_forc}
-\title{plot_cond_forc function}
+\title{plot_cond_forc function; Data should conatain the variable "variable", the "hor" horizon and a "history"}
 \usage{
-plot_cond_forc(variable = varbls[1])
+plot_cond_forc(variable = NULL, cond.for = NULL)
 }
 \arguments{
 \item{variable}{name of variable to be plotted (string)}
+
+\item{cond_for}{conditional forecast data frame}
 }
 \value{
 plot
 }
 \description{
-plot_cond_forc function
+plot_cond_forc function; Data should conatain the variable "variable", the "hor" horizon and a "history"
 }
