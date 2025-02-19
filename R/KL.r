@@ -15,7 +15,9 @@ KL<-function(Sigma_eps,mu_eps,h,plot_=F){
   DKL<-parallel::mclapply(1:n_draws,FUN=function(d){
     0.5*(psych::tr(Sigma_eps[,,d])+t(mu_eps[,,d])%*%mu_eps[,,d]-n_var*h-log(det(Sigma_eps[,,d])))
   },mc.cores = parallel::detectCores()-1) %>% simplify2array()
-  q<-0.5*(1+sqrt(1-exp(-2*DKL/h*n_var)))
+
+  q<-0.5*(1+sqrt(1-exp(-2*DKL/(h*n_var))))
+
   p=NA
   if(plot_){
     tmp<-data.frame(drw=seq_along(q),KLM=q)

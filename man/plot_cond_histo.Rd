@@ -13,7 +13,7 @@ plot_cond_histo(variable = NULL, horizon = 1, threshold = NULL, data = NULL)
 
 \item{threshold}{(optional) If present compute P(x>threshold)}
 
-\item{data:}{data of conditional forecasts}
+\item{data}{data of conditional forecasts}
 }
 \value{
 ggplot object (plot)
