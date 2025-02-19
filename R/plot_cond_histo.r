@@ -2,7 +2,7 @@
 #'
 #' This function uses the conditional probability calculations (eg scenarios) and plots the histogram of the selected variable
 #'
-#' @param data data of conditional forecasts
+#' @param data: data of conditional forecasts
 #' @param variable Name of variable to be plotted (string)
 #' @param horizon At which horizon (horizon<=h)
 #' @param threshold (optional) If present compute P(x>threshold)

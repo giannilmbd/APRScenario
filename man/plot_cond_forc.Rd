@@ -4,12 +4,12 @@
 \alias{plot_cond_forc}
 \title{plot_cond_forc function; Data should conatain the variable "variable", the "hor" horizon and a "history"}
 \usage{
-plot_cond_forc(variable = NULL, cond.for = NULL)
+plot_cond_forc(variable = NULL, data = NULL)
 }
 \arguments{
 \item{variable}{name of variable to be plotted (string)}
 
-\item{cond_for}{conditional forecast data frame}
+\item{data:}{conditional forecast data frame (eg cond.for)}
 }
 \value{
 plot
