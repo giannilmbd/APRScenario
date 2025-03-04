@@ -2,11 +2,14 @@
 #'
 #' @param h forecast horizon
 #' @param n_sim length of shock simulation
+#' @param n_draws Number of draws
+#' @param n_var Number of variables
+#' @param n_p Number of lags
 #' @returns a matrix of unconditional forecasts
 #' @export
 #' @import dplyr
 
-forc_h<-function(h=1,n_sim=200){
+forc_h<-function(h=1,n_sim=200,n_draws,n_var,n_p){
 
   # this function takes the forecast matrices b and M and combines with simulated future shocks
   # the output will be the forecsast on n_var, h-horizon,n_draws and n_sim (last two dims eventually mixed together)
@@ -24,7 +27,7 @@ forc_h<-function(h=1,n_sim=200){
 
 
   for(cnt in 1:h){
-    tmp<-mat_forc(cnt)
+    tmp<-mat_forc(cnt,n_draws,n_var,n_p)
     b_h<-tmp[[1]]
     M_h<-tmp[[2]]
 

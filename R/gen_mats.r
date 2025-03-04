@@ -3,6 +3,9 @@
 #' this function assign to the global environment the matrices necessary for forecasts
 #'
 #' @param posterior Posterior estimation results (eg from BsvarSIGNs)
+#' @param n_draws Number of draws
+#' @param n_var Number of variables
+#' @param n_p Number of lags
 #' @returns Returns all the objects necessary for the other functions in scenario analysis (eg IRF matrix)
 #' @export
 #'
@@ -10,7 +13,7 @@
 
 
 
-gen_mats<-function(posterior=NULL){
+gen_mats<-function(posterior=NULL,n_draws,n_var,n_p){
   # this function assign to the global environment the matrices necessary for forecasts
   ##### FIRST DEFINE NECESSARY MATRICES AND DIMENSIONS
   ## Extract matrices

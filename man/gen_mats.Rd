@@ -4,10 +4,16 @@
 \alias{gen_mats}
 \title{gen_mats function}
 \usage{
-gen_mats(posterior = NULL)
+gen_mats(posterior = NULL, n_draws, n_var, n_p)
 }
 \arguments{
 \item{posterior}{Posterior estimation results (eg from BsvarSIGNs)}
+
+\item{n_draws}{Number of draws}
+
+\item{n_var}{Number of variables}
+
+\item{n_p}{Number of lags}
 }
 \value{
 Returns all the objects necessary for the other functions in scenario analysis (eg IRF matrix)

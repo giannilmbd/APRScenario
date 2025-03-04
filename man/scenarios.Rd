@@ -4,7 +4,7 @@
 \alias{scenarios}
 \title{scenarios function}
 \usage{
-scenarios(h = 3, path = NULL, obs = NULL, shocks = NULL)
+scenarios(h = 3, path = NULL, obs = NULL, shocks = NULL, n_draws, n_var, n_p)
 }
 \arguments{
 \item{h}{forecast horizon}
@@ -14,6 +14,12 @@ scenarios(h = 3, path = NULL, obs = NULL, shocks = NULL)
 \item{obs}{position of observable(s)}
 
 \item{shocks}{position of non-driving shocks (NA if all driving)}
+
+\item{n_draws}{Number of draws}
+
+\item{n_var}{Number of variables}
+
+\item{n_p}{Number of lags}
 }
 \value{
 mean and variance of innovations and forecasts (four matrices) plus big_b and big_M

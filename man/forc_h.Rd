@@ -4,12 +4,18 @@
 \alias{forc_h}
 \title{forc_h function}
 \usage{
-forc_h(h = 1, n_sim = 200)
+forc_h(h = 1, n_sim = 200, n_draws, n_var, n_p)
 }
 \arguments{
 \item{h}{forecast horizon}
 
 \item{n_sim}{length of shock simulation}
+
+\item{n_draws}{Number of draws}
+
+\item{n_var}{Number of variables}
+
+\item{n_p}{Number of lags}
 }
 \value{
 a matrix of unconditional forecasts

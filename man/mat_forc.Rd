@@ -14,10 +14,16 @@ B=>A_0^{-1}*Q and                                                          #
 A=>B                                                                       #
 ##############################################################################}
 \usage{
-mat_forc(h = 1)
+mat_forc(h = 1, n_draws, n_var, n_p)
 }
 \arguments{
 \item{h}{forecast horison}
+
+\item{n_draws}{Number of draws}
+
+\item{n_var}{Number of variables}
+
+\item{n_p}{Number of lags}
 }
 \value{
 the big_b and big_M matrices of mean and IRF

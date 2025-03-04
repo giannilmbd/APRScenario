@@ -3,11 +3,14 @@
 #' @param path conditional path of observables
 #' @param obs position of observable(s)
 #' @param shocks position of non-driving shocks (NA if all driving)
+#' @param n_draws Number of draws
+#' @param n_var Number of variables
+#' @param n_p Number of lags
 #' @returns mean and variance of innovations and forecasts (four matrices) plus big_b and big_M
 #' @export
 
-scenarios<-function(h=3,path=NULL,obs=NULL,shocks=NULL){
-  tmp<-big_b_and_M(h)
+scenarios<-function(h=3,path=NULL,obs=NULL,shocks=NULL,n_draws,n_var,n_p){
+  tmp<-big_b_and_M(h,n_draws,n_var,n_p)
   big_b<-tmp[[1]]
   big_M<-tmp[[2]]
   pos_cond_vars=obs # list of positions; as many as rows in the array below

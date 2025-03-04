@@ -10,12 +10,14 @@
 #'  A=>B                                                                       #
 #'##############################################################################
 #' @param h forecast horison
-#'
+#' @param n_draws Number of draws
+#' @param n_var Number of variables
+#' @param n_p Number of lags
 #' @returns the big_b and big_M matrices of mean and IRF
 #' @export
 #' @import dplyr
 #'
-mat_forc<-function(h=1){
+mat_forc<-function(h=1,n_draws,n_var,n_p){
   # Derivation of the b and M matrices to produce the conditional MA form y=b+sum(epsilon*M)
   # See appendix of Antolin-Diaz et al (JME 21)
   ### b block
@@ -116,23 +118,4 @@ mat_forc<-function(h=1){
   return(list(b_h,M_h))
 }
 
-big_b_and_M<-function(h){
-  big_b<-array(0,dim=c(1,n_var*h,n_draws))
-  big_M<-array(0,dim=c(n_var*h,n_var*h,n_draws))
-  M_h=list()
-  for(cnt in 1:h){
-    tmp<-mat_forc(cnt)
-    b_h<-tmp[[1]]
-    M_h[[cnt]]<-tmp[[2]][[cnt]]
-    big_b[1,(1+n_var*(cnt-1)):(cnt*n_var),]<-b_h
 
-  }
-  for(cnt in 1:h){
-    zz=1
-    for(cnt2 in cnt:h){
-      big_M[(1+n_var*(cnt-1)):(cnt*n_var),(1+n_var*(cnt2-1)):(cnt2*n_var),]<-M_h[[zz]]
-      zz=zz+1
-    }
-  }
-  return(list(big_b,big_M))
-}
