@@ -3,9 +3,10 @@
 #' This function uses the conditional probability calculations (eg scenarios) and plots the histogram of the selected variable
 #'
 #' @param data data of conditional forecasts
-#' @param variable Name of variable to be plotted (string)
-#' @param horizon At which horizon (horizon<=h)
-#' @param threshold (optional) If present compute P(x>threshold)
+#' @param variable (character) Name of variable to be plotted
+#' @param horizon (numeric) At which horizon (horizon<=h)
+#' @param threshold (numeric,optional) If present compute P(x>threshold)
+#' @param above (logical,optional): if TRUE then compute probability above threshold
 #'
 #' @returns ggplot object (plot)
 #'
@@ -13,7 +14,7 @@
 #'
 #' @import dplyr
 
-plot_cond_histo<-function(variable=NULL,horizon=1,threshold=NULL,data=NULL){
+plot_cond_histo<-function(variable=NULL,horizon=1,threshold=NULL,data=NULL,above=T){
   y_h=data
   y_h_df<-as.data.frame(t(y_h))
   comby=paste(variable,horizon,sep='.')
@@ -22,12 +23,12 @@ plot_cond_histo<-function(variable=NULL,horizon=1,threshold=NULL,data=NULL){
     geom_histogram(aes(x = !!sym(comby)), alpha = 0.5) +
     labs(title = paste0('Distribution of forecast at horizon ', horizon)) +
     theme_minimal()
-
+  if (!is.null(above)) {above=T}
   if (!is.null(threshold)) {
 
     # Calculate the probability of values above the threshold
-    med_=median(y_h_df[[comby]])
-    if(threshold>med_){
+    # med_=median(y_h_df[[comby]])
+    if(above){
     prob_above_threshold <- mean(y_h_df[[comby]] > threshold)
     }else{
       prob_above_threshold <- mean(y_h_df[[comby]] < threshold)

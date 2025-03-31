@@ -1,3 +1,6 @@
+#' big_b_and_M
+#' This function returns the extended b and M matrices as in APR
+#'
 #' @param h forecast horison
 #' @param n_draws Number of draws
 #' @param n_var Number of variables
@@ -14,7 +17,7 @@ big_b_and_M<-function(h,n_draws,n_var,n_p){
     b_h<-tmp[[1]]
     M_h[[cnt]]<-tmp[[2]][[cnt]]
     big_b[1,(1+n_var*(cnt-1)):(cnt*n_var),]<-b_h
-    
+
   }
   for(cnt in 1:h){
     zz=1

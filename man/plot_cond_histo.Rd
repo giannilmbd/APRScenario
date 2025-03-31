@@ -4,16 +4,24 @@
 \alias{plot_cond_histo}
 \title{plot_cond_histo function}
 \usage{
-plot_cond_histo(variable = NULL, horizon = 1, threshold = NULL, data = NULL)
+plot_cond_histo(
+  variable = NULL,
+  horizon = 1,
+  threshold = NULL,
+  data = NULL,
+  above = T
+)
 }
 \arguments{
-\item{variable}{Name of variable to be plotted (string)}
+\item{variable}{(character) Name of variable to be plotted}
 
-\item{horizon}{At which horizon (horizon<=h)}
+\item{horizon}{(numeric) At which horizon (horizon<=h)}
 
-\item{threshold}{(optional) If present compute P(x>threshold)}
+\item{threshold}{(numeric,optional) If present compute P(x>threshold)}
 
 \item{data}{data of conditional forecasts}
+
+\item{above}{(logical,optional): if TRUE then compute probability above threshold}
 }
 \value{
 ggplot object (plot)
