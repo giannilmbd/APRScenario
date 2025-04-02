@@ -14,16 +14,18 @@ B=>A_0^{-1}*Q and                                                          #
 A=>B                                                                       #
 ##############################################################################}
 \usage{
-mat_forc(h = 1, n_draws, n_var, n_p)
+mat_forc(h = 1, n_draws, n_var, n_p, data_ = Z)
 }
 \arguments{
-\item{h}{forecast horison}
+\item{h}{(integer) forecast horison}
 
-\item{n_draws}{Number of draws}
+\item{n_draws}{(integer) Number of draws}
 
-\item{n_var}{Number of variables}
+\item{n_var}{(integer) Number of variables}
 
-\item{n_p}{Number of lags}
+\item{n_p}{(integer) Number of lags}
+
+\item{data_}{(matrix optional) The data, stacking Y over X (data and laggs) -- columns are observations (default is Z produced by gen_mats)}
 }
 \value{
 the big_b and big_M matrices of mean and IRF

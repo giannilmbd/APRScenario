@@ -6,11 +6,12 @@
 #' @param n_draws Number of draws
 #' @param n_var Number of variables
 #' @param n_p Number of lags
+#' @param data_ (matrix optional) The data, stacking Y over X (data and laggs) -- columns are observations (default is Z produced by gen_mats)
 #' @returns mean and variance of innovations and forecasts (four matrices) plus big_b and big_M
 #' @export
 
-scenarios<-function(h=3,path=NULL,obs=NULL,shocks=NULL,n_draws,n_var,n_p){
-  tmp<-big_b_and_M(h,n_draws,n_var,n_p)
+scenarios<-function(h=3,path=NULL,obs=NULL,shocks=NULL,n_draws,n_var,n_p,data_=Z){
+  tmp<-big_b_and_M(h,n_draws,n_var,n_p,data_=Z)
   big_b<-tmp[[1]]
   big_M<-tmp[[2]]
   pos_cond_vars=obs # list of positions; as many as rows in the array below

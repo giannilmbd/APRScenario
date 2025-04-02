@@ -9,15 +9,16 @@
 #'  B=>A_0^{-1}*Q and                                                          #
 #'  A=>B                                                                       #
 #'##############################################################################
-#' @param h forecast horison
-#' @param n_draws Number of draws
-#' @param n_var Number of variables
-#' @param n_p Number of lags
+#' @param h (integer) forecast horison
+#' @param n_draws (integer) Number of draws
+#' @param n_var (integer) Number of variables
+#' @param n_p (integer) Number of lags
+#' @param data_ (matrix optional) The data, stacking Y over X (data and laggs) -- columns are observations (default is Z produced by gen_mats)
 #' @returns the big_b and big_M matrices of mean and IRF
 #' @export
 #' @import dplyr
 #'
-mat_forc<-function(h=1,n_draws,n_var,n_p){
+mat_forc<-function(h=1,n_draws,n_var,n_p,data_=Z){
   # Derivation of the b and M matrices to produce the conditional MA form y=b+sum(epsilon*M)
   # See appendix of Antolin-Diaz et al (JME 21)
   ### b block

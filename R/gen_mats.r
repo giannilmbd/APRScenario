@@ -6,7 +6,9 @@
 #' @param n_draws Number of draws
 #' @param n_var Number of variables
 #' @param n_p Number of lags
-#' @returns Returns all the objects necessary for the other functions in scenario analysis (eg IRF matrix)
+#' @returns Returns all objects necessary for scenario analysis (e.g., IRF matrix),
+#'   including: \code{M}, \code{M_inv}, \code{M_list}, \code{B}, \code{B_list},
+#'   \code{n_p}, \code{n_var}, \code{Y}, \code{X}, and \code{Z}.
 #' @export
 #'
 #' @import dplyr

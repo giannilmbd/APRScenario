@@ -5,15 +5,16 @@
 #' @param n_draws Number of draws
 #' @param n_var Number of variables
 #' @param n_p Number of lags
+#' @param data_ (matrix optional) The data, stacking Y over X (data and laggs) -- columns are observations (default is Z produced by gen_mats)
 #' @returns the big_b and big_M matrices of mean and IRF
 #' @export
 #' @import dplyr
-big_b_and_M<-function(h,n_draws,n_var,n_p){
+big_b_and_M<-function(h,n_draws,n_var,n_p,data_=Z){
   big_b<-array(0,dim=c(1,n_var*h,n_draws))
   big_M<-array(0,dim=c(n_var*h,n_var*h,n_draws))
   M_h=list()
   for(cnt in 1:h){
-    tmp<-mat_forc(cnt,n_draws,n_var,n_p)
+    tmp<-mat_forc(cnt,n_draws,n_var,n_p,data_=Z)
     b_h<-tmp[[1]]
     M_h[[cnt]]<-tmp[[2]][[cnt]]
     big_b[1,(1+n_var*(cnt-1)):(cnt*n_var),]<-b_h

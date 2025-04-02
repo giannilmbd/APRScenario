@@ -5,7 +5,7 @@
 \title{big_b_and_M
 This function returns the extended b and M matrices as in APR}
 \usage{
-big_b_and_M(h, n_draws, n_var, n_p)
+big_b_and_M(h, n_draws, n_var, n_p, data_ = Z)
 }
 \arguments{
 \item{h}{forecast horison}
@@ -15,6 +15,8 @@ big_b_and_M(h, n_draws, n_var, n_p)
 \item{n_var}{Number of variables}
 
 \item{n_p}{Number of lags}
+
+\item{data_}{(matrix optional) The data, stacking Y over X (data and laggs) -- columns are observations (default is Z produced by gen_mats)}
 }
 \value{
 the big_b and big_M matrices of mean and IRF
