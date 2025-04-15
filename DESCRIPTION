@@ -1,6 +1,6 @@
 Package: APRScenario
 Title: Generates conditional scenarios based on Antolin-Diaz, Petrella and Rubio-Ramirez (JME 2021) (APR)
-Version: 0.0.2.0
+Version: 0.0.3.0
 Authors@R: 
     person("Giovanni", "Lombardo", , "giannilmbd@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = ""))

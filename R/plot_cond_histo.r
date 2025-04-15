@@ -23,7 +23,7 @@ plot_cond_histo<-function(variable=NULL,horizon=1,threshold=NULL,data=NULL,above
     geom_histogram(aes(x = !!sym(comby)), alpha = 0.5) +
     labs(title = paste0('Distribution of forecast at horizon ', horizon)) +
     theme_minimal()
-  if (!is.null(above)) {above=T}
+  if (is.null(above)) {above=T}
   if (!is.null(threshold)) {
 
     # Calculate the probability of values above the threshold
@@ -36,8 +36,13 @@ plot_cond_histo<-function(variable=NULL,horizon=1,threshold=NULL,data=NULL,above
     # Add the vertical line and annotate the probability on the plot
     p <- p +
       geom_vline(xintercept = threshold, color = "red", linetype = "dashed", size = 1) +
+      if(above){
       annotate("text", x = threshold, y = 0, label = paste0("P(X > ", round(threshold,3), ") = ", round(prob_above_threshold, 3)),
                vjust = -0.5, hjust = -0.1, color = "red")
+      }else{
+        annotate("text", x = threshold, y = 0, label = paste0("P(X < ", round(threshold,3), ") = ", round(prob_above_threshold, 3)),
+                 vjust = -0.5, hjust = -0.1, color = "red")
+      }
   }
 
   return(p)
