@@ -9,7 +9,8 @@ plot_cond_histo(
   horizon = 1,
   threshold = NULL,
   data = NULL,
-  above = T
+  above = T,
+  size = 5
 )
 }
 \arguments{

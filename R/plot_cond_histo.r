@@ -14,7 +14,7 @@
 #'
 #' @import dplyr
 
-plot_cond_histo<-function(variable=NULL,horizon=1,threshold=NULL,data=NULL,above=T){
+plot_cond_histo<-function(variable=NULL,horizon=1,threshold=NULL,data=NULL,above=T,size=5){
   y_h=data
   y_h_df<-as.data.frame(t(y_h))
   comby=paste(variable,horizon,sep='.')
@@ -38,10 +38,10 @@ plot_cond_histo<-function(variable=NULL,horizon=1,threshold=NULL,data=NULL,above
       geom_vline(xintercept = threshold, color = "red", linetype = "dashed", size = 1) +
       if(above){
       annotate("text", x = threshold, y = 0, label = paste0("P(X > ", round(threshold,3), ") = ", round(prob_above_threshold, 3)),
-               vjust = -0.5, hjust = -0.1, color = "red")
+               vjust = -0.5, hjust = -0.1, color = "red",size=size)
       }else{
         annotate("text", x = threshold, y = 0, label = paste0("P(X < ", round(threshold,3), ") = ", round(prob_above_threshold, 3)),
-                 vjust = -0.5, hjust = -0.1, color = "red")
+                 vjust = -0.5, hjust = -0.1, color = "red",size=size)
       }
   }
 
