@@ -23,6 +23,8 @@ plot_cond_histo(
 \item{data}{data of conditional forecasts}
 
 \item{above}{(logical,optional): if TRUE then compute probability above threshold}
+
+\item{size}{(optional) size of annotation text in the plot}
 }
 \value{
 ggplot object (plot)

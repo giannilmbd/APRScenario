@@ -7,6 +7,7 @@
 #' @param horizon (numeric) At which horizon (horizon<=h)
 #' @param threshold (numeric,optional) If present compute P(x>threshold)
 #' @param above (logical,optional): if TRUE then compute probability above threshold
+#' @param size (optional) size of annotation text in the plot
 #'
 #' @returns ggplot object (plot)
 #'
