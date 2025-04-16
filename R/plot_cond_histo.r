@@ -20,8 +20,9 @@ plot_cond_histo<-function(variable=NULL,horizon=1,threshold=NULL,data=NULL,above
   y_h_df<-as.data.frame(t(y_h))
   comby=paste(variable,horizon,sep='.')
 
-  p <- ggplot(data = y_h_df) +
-    geom_histogram(aes(x = !!sym(comby)), alpha = 0.5) +
+  p <- ggplot(data = y_h_df,aes(x = !!sym(comby))) +
+    geom_histogram( alpha = 0.1,fill='cyan') +
+    geom_density(color='blue',fill=NA)+
     labs(title = paste0('Distribution of forecast at horizon ', horizon)) +
     theme_minimal()
   if (is.null(above)) {above=T}
