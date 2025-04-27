@@ -8,6 +8,7 @@
 #' @param big_M IRF (innovation loading)
 #' @param n_sim number of simulations
 #' @param h horizon
+#' @param sample_idx Vector of indices of draws to use (default is 1:n_draws)
 #'
 #' @returns conditional forecast path and distribution
 #'
@@ -15,21 +16,22 @@
 #'
 #' @import dplyr
 
-SimScen<-function(mu_eps,Sigma_eps,mu_y,Sigma_y,big_b,big_M,n_sim,h,varbls){
- n_var=length(varbls)
+SimScen<-function(mu_eps,Sigma_eps,mu_y,Sigma_y,big_b,big_M,n_sim,h,varbls,sample_idx=1:dim(mu_eps)[3]){
+  n_draws <- length(sample_idx)
+  n_var=length(varbls)
   #draw shocks
   epsilon <- parallel::mclapply(1:n_draws, FUN = function(i) {
     # Generate n_sim samples for each draw
-    samples <- MASS::mvrnorm(n = n_sim, mu = mu_eps[,1, i], Sigma = Sigma_eps[,, i])
+    samples <- MASS::mvrnorm(n = n_sim, mu = mu_eps[,1, sample_idx[i]], Sigma = Sigma_eps[,, sample_idx[i]])
     return(samples)
   }, mc.cores = parallel::detectCores()-1) %>% simplify2array() %>% aperm(.,c(2,1,3)) %>% array(.,dim=c(dim(big_b)[2],n_sim*n_draws))
 
   #expand big_b along simulations
   big_b_sim<-parallel::mclapply(1:n_draws,FUN=function(d){
-    array(rep(big_b[1,,d],n_sim),dim=c(dim(big_b)[2],n_sim))},mc.cores=parallel::detectCores()-1) %>% simplify2array()%>% array(.,dim=c(dim(big_b)[2],n_sim*n_draws))
+    array(rep(big_b[1,,sample_idx[d]],n_sim),dim=c(dim(big_b)[2],n_sim))},mc.cores=parallel::detectCores()-1) %>% simplify2array()%>% array(.,dim=c(dim(big_b)[2],n_sim*n_draws))
   # expand big_M
   big_M_sim<-parallel::mclapply(1:n_draws,FUN=function(d){
-    array(rep(big_M[,,d],n_sim),dim=c(dim(big_M)[1],dim(big_M)[2],n_sim))
+    array(rep(big_M[,,sample_idx[d]],n_sim),dim=c(dim(big_M)[1],dim(big_M)[2],n_sim))
   },mc.cores=parallel::detectCores()-1) %>% simplify2array()%>% array(.,dim=c(dim(big_M)[1],dim(big_M)[2],n_sim*n_draws))
   # b+M'epsilon
 

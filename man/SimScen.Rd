@@ -4,7 +4,18 @@
 \alias{SimScen}
 \title{simscen function}
 \usage{
-SimScen(mu_eps, Sigma_eps, mu_y, Sigma_y, big_b, big_M, n_sim, h, varbls)
+SimScen(
+  mu_eps,
+  Sigma_eps,
+  mu_y,
+  Sigma_y,
+  big_b,
+  big_M,
+  n_sim,
+  h,
+  varbls,
+  sample_idx = 1:dim(mu_eps)[3]
+)
 }
 \arguments{
 \item{mu_eps}{mean innovation}
@@ -22,6 +33,8 @@ SimScen(mu_eps, Sigma_eps, mu_y, Sigma_y, big_b, big_M, n_sim, h, varbls)
 \item{n_sim}{number of simulations}
 
 \item{h}{horizon}
+
+\item{sample_idx}{Vector of indices of draws to use (default is 1:n_draws)}
 }
 \value{
 conditional forecast path and distribution
