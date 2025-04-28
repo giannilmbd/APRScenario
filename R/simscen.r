@@ -8,7 +8,7 @@
 #' @param big_M IRF (innovation loading)
 #' @param n_sim number of simulations
 #' @param h horizon
-#' @param sample_idx Vector of indices of draws to use (default is 1:n_draws)
+#' @param idx_sampled index of random sample to use instead of full draws (from scenarios.r)
 #'
 #' @returns conditional forecast path and distribution
 #'
@@ -16,28 +16,42 @@
 #'
 #' @import dplyr
 
-SimScen<-function(mu_eps,Sigma_eps,mu_y,Sigma_y,big_b,big_M,n_sim,h,varbls,sample_idx=1:dim(mu_eps)[3]){
-  n_draws <- length(sample_idx)
-  n_var=length(varbls)
-  #draw shocks
-  epsilon <- parallel::mclapply(1:n_draws, FUN = function(i) {
-    # Generate n_sim samples for each draw
-    samples <- MASS::mvrnorm(n = n_sim, mu = mu_eps[,1, sample_idx[i]], Sigma = Sigma_eps[,, sample_idx[i]])
-    return(samples)
-  }, mc.cores = parallel::detectCores()-1) %>% simplify2array() %>% aperm(.,c(2,1,3)) %>% array(.,dim=c(dim(big_b)[2],n_sim*n_draws))
+SimScen <- function(mu_eps, Sigma_eps, mu_y, Sigma_y, big_b, big_M, n_sim, h, varbls, idx_sampled=c(1:dim(mu_eps)[3])) {
 
-  #expand big_b along simulations
-  big_b_sim<-parallel::mclapply(1:n_draws,FUN=function(d){
-    array(rep(big_b[1,,sample_idx[d]],n_sim),dim=c(dim(big_b)[2],n_sim))},mc.cores=parallel::detectCores()-1) %>% simplify2array()%>% array(.,dim=c(dim(big_b)[2],n_sim*n_draws))
-  # expand big_M
-  big_M_sim<-parallel::mclapply(1:n_draws,FUN=function(d){
-    array(rep(big_M[,,sample_idx[d]],n_sim),dim=c(dim(big_M)[1],dim(big_M)[2],n_sim))
-  },mc.cores=parallel::detectCores()-1) %>% simplify2array()%>% array(.,dim=c(dim(big_M)[1],dim(big_M)[2],n_sim*n_draws))
-  # b+M'epsilon
+  n_var <- length(varbls)
+  n_draws_used <- length(idx_sampled)  # exactly the subsampled draws
 
-  y_h<-parallel::mclapply(1:(n_draws*n_sim),FUN=function(d){
-    big_b_sim[,d]+t(big_M_sim[,,d])%*%epsilon[,d]
-  },mc.cores = parallel::detectCores()-1) %>% simplify2array() %>% array(.,dim=c(dim(big_M)[1],n_draws*n_sim))
-  rownames(y_h)<-paste(rep(varbls,h),sort(rep(1:h,n_var)),sep='.')
+  # Draw shocks using the sampled draws
+  epsilon <- parallel::mclapply(1:n_draws_used, FUN = function(i) {
+    MASS::mvrnorm(n = n_sim, mu = mu_eps[,1,i], Sigma = Sigma_eps[,,i])
+  }, mc.cores = parallel::detectCores() - 1) %>%
+    simplify2array() %>%
+    aperm(c(2,1,3)) %>%
+    array(dim = c(dim(big_b)[2], n_sim * n_draws_used))
+
+  # Expand big_b across simulations
+  big_b_sim <- parallel::mclapply(1:n_draws_used, FUN = function(i) {
+    array(rep(big_b[1,,i], n_sim), dim = c(dim(big_b)[2], n_sim))
+  }, mc.cores = parallel::detectCores() - 1) %>%
+    simplify2array() %>%
+    array(dim = c(dim(big_b)[2], n_sim * n_draws_used))
+
+  # Expand big_M across simulations
+  big_M_sim <- parallel::mclapply(1:n_draws_used, FUN = function(i) {
+    array(rep(big_M[,,i], n_sim), dim = c(dim(big_M)[1], dim(big_M)[2], n_sim))
+  }, mc.cores = parallel::detectCores() - 1) %>%
+    simplify2array() %>%
+    array(dim = c(dim(big_M)[1], dim(big_M)[2], n_sim * n_draws_used))
+
+  # Compute y_h = big_b + M' * epsilon
+  y_h <- parallel::mclapply(1:(n_sim * n_draws_used), FUN = function(i) {
+    big_b_sim[,i] + t(big_M_sim[,,i]) %*% epsilon[,i]
+  }, mc.cores = parallel::detectCores() - 1) %>%
+    simplify2array() %>%
+    array(dim = c(dim(big_M)[1], n_sim * n_draws_used))
+
+  # Name the rows
+  rownames(y_h) <- paste(rep(varbls, h), sort(rep(1:h, n_var)), sep = '.')
+
   return(y_h)
 }
