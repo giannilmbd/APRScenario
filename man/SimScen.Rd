@@ -14,7 +14,7 @@ SimScen(
   n_sim,
   h,
   varbls,
-  sample_idx = 1:dim(mu_eps)[3]
+  idx_sampled = c(1:dim(mu_eps)[3])
 )
 }
 \arguments{
@@ -34,7 +34,7 @@ SimScen(
 
 \item{h}{horizon}
 
-\item{sample_idx}{Vector of indices of draws to use (default is 1:n_draws)}
+\item{idx_sampled}{index of random sample to use instead of full draws (from scenarios.r)}
 }
 \value{
 conditional forecast path and distribution

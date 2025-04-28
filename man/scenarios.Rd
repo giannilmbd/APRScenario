@@ -10,9 +10,9 @@ scenarios(
   obs = NULL,
   shocks = NULL,
   n_draws,
+  n_sample = n_draws,
   n_var,
   n_p,
-  n_sample = n_draws,
   data_ = Z
 )
 }
@@ -27,13 +27,13 @@ scenarios(
 
 \item{n_draws}{Number of draws}
 
+\item{n_sample}{Number of draws to sample (must be <= n_draws)}
+
 \item{n_var}{Number of variables}
 
 \item{n_p}{Number of lags}
 
-\item{n_sample}{Number of draws to sample (default is n_draws)}
-
-\item{data_}{(matrix optional) The data, stacking Y over X (data and laggs) -- columns are observations (default is Z produced by gen_mats)}
+\item{data_}{(matrix optional) The data, stacking Y over X (default is Z produced by gen_mats)}
 }
 \value{
 mean and variance of innovations and forecasts (four matrices) plus big_b and big_M
