@@ -2,7 +2,7 @@
 % Please edit documentation in R/simscen.r
 \name{SimScen}
 \alias{SimScen}
-\title{simscen function}
+\title{simscen function (optimized)}
 \usage{
 SimScen(
   mu_eps,
@@ -14,7 +14,7 @@ SimScen(
   n_sim,
   h,
   varbls,
-  idx_sampled = c(1:dim(mu_eps)[3])
+  idx_sampled = 1:dim(mu_eps)[3]
 )
 }
 \arguments{
@@ -34,11 +34,13 @@ SimScen(
 
 \item{h}{horizon}
 
-\item{idx_sampled}{index of random sample to use instead of full draws (from scenarios.r)}
+\item{varbls}{variable names}
+
+\item{idx_sampled}{index of random sample to use instead of full draws (from scenarios)}
 }
 \value{
 conditional forecast path and distribution
 }
 \description{
-simscen function
+simscen function (optimized)
 }

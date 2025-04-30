@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 scenarios_core <- function(big_b_list, big_M_list, C_hat_list, D_list, D_ast_list, f_hat_list, Omega_hat_list) {
-    .Call('_APRScenario_scenarios_core', PACKAGE = 'APRScenario', big_b_list, big_M_list, C_hat_list, D_list, D_ast_list, f_hat_list, Omega_hat_list)
+    .Call(`_APRScenario_scenarios_core`, big_b_list, big_M_list, C_hat_list, D_list, D_ast_list, f_hat_list, Omega_hat_list)
 }
 

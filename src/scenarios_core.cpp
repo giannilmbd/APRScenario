@@ -35,7 +35,7 @@ List scenarios_core(List big_b_list, List big_M_list, List C_hat_list, List D_li
     arma::mat mu_eps = D_ast * (f_hat - C_hat * big_b);
 
     // Sigma_eps
-    arma::mat I = eye(size(D));
+    arma::mat I = eye(D_ast.n_rows, D_ast.n_rows);
     arma::mat Sigma_eps = D_ast * Omega_hat * D_ast.t() +
                           (I - D_ast * D) * (I - D_ast * D).t();
 

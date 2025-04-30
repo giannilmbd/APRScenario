@@ -1,34 +1,69 @@
 #' plot_cond_forc function; Data should conatain the variable "variable", the "hor" horizon and a "history"
 #'
-#' @param variable name of variable to be plotted (string)
-#' @param data: conditional forecast data frame (eg cond.for)
-#' @returns plot
+#' @param varbl2plot name of variable to be plotted (string)
+#' @param y_h_cond conditional forecast data frame (eg from SimScen) with names c("hor","variable","lower","center","upper"): hor is a Date object
+#' @param center (optional, default 0.5) quantile of the mid value
+#' @param lower (optional, default 0.16) quantile of lower range
+#' @param upper (optional, default 0.84) quantile of upper range
+#' @param T.start start date of the forecast
+#' @param T.end end of the forecast
+#' @param y_data Data used in the estimation eg t(specification$get_data_matrices()$Y) %>% as.data.frame(); true_data$hor=dates
+#' @returns list of plot and data used
 #'
 #' @export
 #'
 #' @import dplyr
 #'
-plot_cond_forc<-function(variable=NULL,data=NULL){
-  cond.for<-data
-  p <- ggplot(cond.for[cond.for$variable == variable, ], aes(x = hor)) +
-    # Median line (solid line)
-    geom_line(aes(y = center, color =factor(hist),group=hist), linewidth = 1, show.legend = TRUE) +
-    # Shaded area for 68% HDI
-    geom_ribbon(aes(ymin = lower, ymax = upper),fill='pink',
-                alpha = 0.5, show.legend = TRUE) +
-    # Labels and theme
-    labs(title = "Conditional (scenario) Forecast", x = "h", y = variable) +
-    theme_minimal() +
-    # Custom legend for colors
-    scale_color_manual(
-      name = "",
-      labels=c('0'="",'1'=""),
-      values = c("0" = "blue",  '1'= "red")
-    ) +
-    theme(legend.position = 'none')
+plot_cond_forc<-function(varbl2plot=NULL,y_h_cond=NULL,center=0.5,
+                         lower=0.16,upper=0.84,T.start=NULL,T.end=NULL,y_data=NULL){
+  dates_date<-seq.Date(from=as.Date(y_data$hor[1]),to=as.Date(T.end),by='quarter')
+  periods<-dates_date[dates_date>=T.start&dates_date<=T.end]
+  y_h_m<-apply(y_h_cond,c(1),FUN=function(x)quantile(x,0.5)) %>% cond2df(.,name = 'center')
+  y_h_l<-apply(y_h_cond,c(1),FUN=function(x)quantile(x,0.16))%>% cond2df(.,name = 'lower')
+  y_h_u<-apply(y_h_cond,c(1),FUN=function(x)quantile(x,0.84))%>% cond2df(.,name = 'upper')
+
+  cond_for<-full_join(y_h_m,y_h_l,by=c('variable','period'))
+  cond_for<-full_join(cond_for,y_h_u,by=c('variable','period'))
+  # names(cond_for)
+  cond_for<-cond_for %>% group_by(variable) %>%
+    mutate(hor=periods)
+  cond.for<-cond_for[,c("hor","variable","lower","center","upper")]
+
+  y_data.l<-pivot_longer(y_data,cols =!hor,values_to ='center',names_to = "variable" )
+  y_data.l$lower<-NA
+  y_data.l$upper<-NA
+  y_data.l<-y_data.l[,c("hor","variable","lower","center","upper")]
+  cond.for<-rbind(y_data.l[y_data.l$hor<first(periods),],cond.for) %>% as.data.frame()
+  cond.for<-cond.for[order(cond.for$hor,cond.for$variable),]
+  true_data<-y_data.l[,c('hor','variable','center')]
+  names(true_data)[3]<-'data'
+  cond.for<-full_join(cond.for,true_data,by=c('hor','variable'))
+  cond.for$forc<-'f'
+  cond.for[cond.for$hor<T.start,'forc']<-'d'
+  cond.for[cond.for$hor<T.start,'center']<-NA
 
 
-  # Display the plot
+  p<-ggplot(data=cond.for[cond.for$variable==varbl2plot,],aes(x=hor))+
+    geom_line(aes(y=center),linetype='dashed')+
+    geom_line(aes(y=data),color='blue')+ylab(varbl2plot)+
+    geom_ribbon(aes(ymax=upper,ymin=lower),fill='pink',alpha=0.5)+xlab('')
+  return(list(p,cond.for))
+}
+cond2df<-function(named_vec=NULL,name='Value'){
+  df <- data.frame(
+    cname = names(named_vec),
+    value = as.numeric(named_vec)
+  )
+  names(df)<-c('cname',name)
+  # Split into variable and period using regex
+  df$variable <- sub("\\.[0-9]+$", "", df$cname)
+  df$period <- as.integer(sub(".*\\.", "", df$cname))
 
-  return(p)
+  # Reorder columns
+  df <- df[, c("variable", "period", name)]
+
+  # Optional: sort by variable then period
+  df <- df[order(df$variable, df$period), ]
+
+  return(df)
 }

@@ -10,16 +10,18 @@
 #' @param data_ optional matrix of Y over X (default Z)
 #' @return list of mu_eps, Sigma_eps, mu_y, Sigma_y, big_b, big_M, draws_used
 #' @export
+#' @useDynLib APRScenario, .registration = TRUE
+#' @importFrom Rcpp sourceCpp
 scenarios <- function(h = 3, path = NULL, obs = NULL, shocks = NULL,
                       n_draws, n_sample = n_draws, n_var, n_p, data_ = Z) {
-  # Get big_b and big_M from prior function
+
   tmp <- big_b_and_M(h, n_draws, n_var, n_p, data_ = data_)
   big_b <- tmp[[1]]
   big_M <- tmp[[2]]
 
   draws_to_use <- if (n_sample < n_draws) sample(seq_len(n_draws), n_sample) else seq_len(n_draws)
-  big_b <- big_b[,,draws_to_use, drop=FALSE]
-  big_M <- big_M[,,draws_to_use, drop=FALSE]
+  big_b <- big_b[,,draws_to_use, drop = FALSE]
+  big_M <- big_M[,,draws_to_use, drop = FALSE]
   n_draws <- n_sample
 
   pos_cond_vars <- obs
@@ -27,9 +29,9 @@ scenarios <- function(h = 3, path = NULL, obs = NULL, shocks = NULL,
   f <- array(rep(path, n_draws), dim = c(k_0, 1, n_draws))
 
   # ---- Selection Matrix C_h
-  row_indices <- as.vector(sapply(pos_cond_vars, function(i) seq(i, n_var*h, by=n_var)))
-  C_h <- array(0, dim = c(k_0, n_var*h, n_draws))
-  eye_nh <- diag(1, n_var*h)
+  row_indices <- as.vector(sapply(pos_cond_vars, function(i) seq(i, n_var * h, by = n_var)))
+  C_h <- array(0, dim = c(k_0, n_var * h, n_draws))
+  eye_nh <- diag(1, n_var * h)
   for (d in 1:n_draws) {
     C_h[,,d] <- eye_nh[row_indices, ]
   }
@@ -38,23 +40,24 @@ scenarios <- function(h = 3, path = NULL, obs = NULL, shocks = NULL,
   has_non_driving <- !any(is.na(shocks))
   if (has_non_driving) {
     k_s <- length(shocks) * h
-    shock_rows <- as.vector(sapply(shocks, function(i) seq(i, n_var*h, by=n_var)))
-    Xi <- array(0, dim = c(k_s, n_var*h, n_draws))
+    shock_rows <- as.vector(sapply(shocks, function(i) seq(i, n_var * h, by = n_var)))
+    Xi <- array(0, dim = c(k_s, n_var * h, n_draws))
     for (d in 1:n_draws) {
       Xi[,,d] <- eye_nh[shock_rows, ]
     }
 
-    C_l <- array(0, dim = c(k_s, n_var*h, n_draws))
+    C_l <- array(0, dim = c(k_s, n_var * h, n_draws))
     for (d in 1:n_draws) {
       C_l[,,d] <- Xi[,,d] %*% solve(t(big_M[,,d]))
     }
 
     C_hat <- abind::abind(C_h, C_l, along = 1)
 
-    big_b_col <- array(big_b, dim = c(dim(big_b)[2], 1, n_draws))
+    # ✅ FIXED: use list of matrices to ensure shape
+    big_b_col <- lapply(1:n_draws, function(d) matrix(big_b[,,d], ncol = 1))
     tmp <- array(0, dim = c(k_s, 1, n_draws))
     for (d in 1:n_draws) {
-      tmp[,,d] <- C_l[,,d] %*% big_b_col[,,d]
+      tmp[,,d] <- C_l[,,d] %*% big_b_col[[d]]
     }
     f_hat <- abind::abind(f, tmp, along = 1)
   } else {
@@ -68,7 +71,7 @@ scenarios <- function(h = 3, path = NULL, obs = NULL, shocks = NULL,
     D[,,d] <- C_hat[,,d] %*% t(big_M[,,d])
   }
 
-  D_ast <- array(0, dim = dim(D))
+  D_ast <- array(0, dim = c(dim(D)[2],dim(D)[1],dim(D)[3]))
   for (d in 1:n_draws) {
     D_ast[,,d] <- MASS::ginv(D[,,d])
   }
@@ -95,24 +98,39 @@ scenarios <- function(h = 3, path = NULL, obs = NULL, shocks = NULL,
     Omega_hat <- Omega_f
   }
 
-  # ---- Rcpp Call
+  # ---- Rcpp Call with live progress bar
+  if (!requireNamespace("pbapply", quietly = TRUE)) {
+    stop("Please install 'pbapply' to show progress: install.packages('pbapply')")
+  }
+
   out <- scenarios_core(
-    big_b_list = lapply(1:n_draws, function(d) big_b[,,d]),
-    big_M_list = lapply(1:n_draws, function(d) big_M[,,d]),
-    C_hat_list = lapply(1:n_draws, function(d) C_hat[,,d]),
-    D_list     = lapply(1:n_draws, function(d) D[,,d]),
-    D_ast_list = lapply(1:n_draws, function(d) D_ast[,,d]),
-    f_hat_list = lapply(1:n_draws, function(d) f_hat[,,d]),
-    Omega_hat_list = lapply(1:n_draws, function(d) Omega_hat[,,d])
+    big_b_list = lapply(1:n_draws, function(d) matrix(big_b[,,d], nrow = dim(big_b)[2]))
+    ,
+    big_M_list = lapply(1:n_draws, function(d) matrix(big_M[,,d], nrow = dim(big_M)[1]))
+    ,
+    C_hat_list = lapply(1:n_draws, function(d) matrix(C_hat[,,d], nrow = dim(C_hat)[1]))
+    ,
+    D_list     = lapply(1:n_draws, function(d) matrix(D[,,d], nrow = dim(D)[1]))
+    ,
+    D_ast_list = lapply(1:n_draws, function(d) matrix(D_ast[,,d], nrow = dim(D_ast)[1]))
+    ,
+    f_hat_list = lapply(1:n_draws, function(d) matrix(f_hat[,,d], nrow = dim(f_hat)[1]))
+    ,
+    Omega_hat_list = lapply(1:n_draws, function(d) matrix(Omega_hat[,,d], nrow = dim(Omega_hat)[1]))
   )
 
+  nM <- dim(big_M)[1]
+
   return(list(
-    mu_eps = out$mu_eps,
-    Sigma_eps = out$Sigma_eps,
-    mu_y = out$mu_y,
-    Sigma_y = out$Sigma_y,
+    mu_eps = abind::abind(lapply(out$mu_eps, function(x) matrix(x, ncol=1)), along=3),
+    Sigma_eps = abind::abind(lapply(out$Sigma_eps, function(x) matrix(x, nrow=nM, ncol=nM)), along=3),
+    mu_y = abind::abind(lapply(out$mu_y, function(x) matrix(x, ncol=1)), along=3),
+    Sigma_y = abind::abind(lapply(out$Sigma_y, function(x) matrix(x, nrow=nM, ncol=nM)), along=3),
     big_b = big_b,
     big_M = big_M,
     draws_used = draws_to_use
   ))
+
+
+
 }

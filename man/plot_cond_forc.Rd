@@ -4,15 +4,36 @@
 \alias{plot_cond_forc}
 \title{plot_cond_forc function; Data should conatain the variable "variable", the "hor" horizon and a "history"}
 \usage{
-plot_cond_forc(variable = NULL, data = NULL)
+plot_cond_forc(
+  varbl2plot = NULL,
+  y_h_cond = NULL,
+  center = 0.5,
+  lower = 0.16,
+  upper = 0.84,
+  T.start = NULL,
+  T.end = NULL,
+  y_data = NULL
+)
 }
 \arguments{
-\item{variable}{name of variable to be plotted (string)}
+\item{varbl2plot}{name of variable to be plotted (string)}
 
-\item{data:}{conditional forecast data frame (eg cond.for)}
+\item{y_h_cond}{conditional forecast data frame (eg from SimScen) with names c("hor","variable","lower","center","upper"): hor is a Date object}
+
+\item{center}{(optional, default 0.5) quantile of the mid value}
+
+\item{lower}{(optional, default 0.16) quantile of lower range}
+
+\item{upper}{(optional, default 0.84) quantile of upper range}
+
+\item{T.start}{start date of the forecast}
+
+\item{T.end}{end of the forecast}
+
+\item{y_data}{Data used in the estimation eg t(specification$get_data_matrices()$Y) \%>\% as.data.frame(); true_data$hor=dates}
 }
 \value{
-plot
+list of plot and data used
 }
 \description{
 plot_cond_forc function; Data should conatain the variable "variable", the "hor" horizon and a "history"
