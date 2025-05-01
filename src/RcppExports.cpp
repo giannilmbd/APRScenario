@@ -11,6 +11,23 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// full_scenarios_core
+List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M, const IntegerVector& obs, const NumericVector& path, const IntegerVector& shocks, int h, int n_var);
+RcppExport SEXP _APRScenario_full_scenarios_core(SEXP big_bSEXP, SEXP big_MSEXP, SEXP obsSEXP, SEXP pathSEXP, SEXP shocksSEXP, SEXP hSEXP, SEXP n_varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::cube& >::type big_b(big_bSEXP);
+    Rcpp::traits::input_parameter< const arma::cube& >::type big_M(big_MSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type obs(obsSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type path(pathSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type shocks(shocksSEXP);
+    Rcpp::traits::input_parameter< int >::type h(hSEXP);
+    Rcpp::traits::input_parameter< int >::type n_var(n_varSEXP);
+    rcpp_result_gen = Rcpp::wrap(full_scenarios_core(big_b, big_M, obs, path, shocks, h, n_var));
+    return rcpp_result_gen;
+END_RCPP
+}
 // scenarios_core
 List scenarios_core(List big_b_list, List big_M_list, List C_hat_list, List D_list, List D_ast_list, List f_hat_list, List Omega_hat_list);
 RcppExport SEXP _APRScenario_scenarios_core(SEXP big_b_listSEXP, SEXP big_M_listSEXP, SEXP C_hat_listSEXP, SEXP D_listSEXP, SEXP D_ast_listSEXP, SEXP f_hat_listSEXP, SEXP Omega_hat_listSEXP) {
@@ -30,6 +47,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_APRScenario_full_scenarios_core", (DL_FUNC) &_APRScenario_full_scenarios_core, 7},
     {"_APRScenario_scenarios_core", (DL_FUNC) &_APRScenario_scenarios_core, 7},
     {NULL, NULL, 0}
 };

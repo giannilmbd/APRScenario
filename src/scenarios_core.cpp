@@ -1,7 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo, RcppProgress)]]
 #include <RcppArmadillo.h>
 #include <progress.hpp>
-#include <progress_bar.hpp>
+#include <iostream>
 
 using namespace Rcpp;
 using namespace arma;
@@ -17,12 +17,15 @@ List scenarios_core(List big_b_list, List big_M_list, List C_hat_list, List D_li
   std::vector<arma::mat> Sigma_eps_vec(n_draws);
   std::vector<arma::mat> mu_y_vec(n_draws);
   std::vector<arma::mat> Sigma_y_vec(n_draws);
-
-  Progress p(n_draws, true);  // true = show progress bar in R
+  vec      progress = round(linspace(0, n_draws, 10));
+  Rcpp::Rcout << "Starting scenario computations...\n" << std::flush;
+  Progress p(10, true);  // true = show progress bar in R
+  
 
   for (int d = 0; d < n_draws; ++d) {
+    
     if (Progress::check_abort()) return List::create();  // allow interrupt
-    p.increment();  // ⏩ move progress forward
+    
     arma::mat big_b  = big_b_list[d];
     arma::mat big_M  = big_M_list[d];
     arma::mat C_hat  = C_hat_list[d];
@@ -50,6 +53,10 @@ List scenarios_core(List big_b_list, List big_M_list, List C_hat_list, List D_li
     Sigma_eps_vec[d] = Sigma_eps;
     mu_y_vec[d] = mu_y;
     Sigma_y_vec[d] = Sigma_y;
+
+    if (any(progress == d)) {
+      p.increment();
+    }
   }
 
   return List::create(

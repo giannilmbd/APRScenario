@@ -12,6 +12,8 @@
 #' @export
 #' @import dplyr
 KL<-function(Sigma_eps,mu_eps,h,plot_=F){
+  n_var<-dim(Sigma_eps)[1]/h
+  n_draws<-dim(Sigma_eps)[3]
   DKL<-parallel::mclapply(1:n_draws,FUN=function(d){
     0.5*(psych::tr(Sigma_eps[,,d])+t(mu_eps[,,d])%*%mu_eps[,,d]-n_var*h-log(det(Sigma_eps[,,d])))
   },mc.cores = parallel::detectCores()-1) %>% simplify2array()

@@ -44,9 +44,13 @@ plot_cond_forc<-function(varbl2plot=NULL,y_h_cond=NULL,center=0.5,
 
 
   p<-ggplot(data=cond.for[cond.for$variable==varbl2plot,],aes(x=hor))+
-    geom_line(aes(y=center),linetype='dashed')+
-    geom_line(aes(y=data),color='blue')+ylab(varbl2plot)+
-    geom_ribbon(aes(ymax=upper,ymin=lower),fill='pink',alpha=0.5)+xlab('')
+    geom_line(aes(y=center,linetype='dashed'))+
+    geom_line(aes(y=data,linetype='solid'),color='blue')+ylab(varbl2plot)+
+    geom_ribbon(aes(ymax=upper,ymin=lower),fill='pink',alpha=0.5)+xlab('')+
+    scale_linetype_manual('',values = c("dashed"="dashed","solid"="solid"),
+                          labels=c("dashed"="forecast","solid"="data"))+
+    geom_vline(xintercept =as.Date(T.start),linetype='dotted',color='red' )+
+    theme_minimal()+theme(legend.position = 'bottom')
   return(list(p,cond.for))
 }
 cond2df<-function(named_vec=NULL,name='Value'){

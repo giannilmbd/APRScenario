@@ -5,7 +5,8 @@ Authors@R:
     person("Giovanni", "Lombardo", , "giannilmbd@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = ""))
 Description: This package implements the scenario analysis proposed by APR. 
-License: MIT + file LICENSE
+License: GPL (>= 3)
+SystemRequirements: LAPACK
 Imports:
     dplyr,
     ggplot2,
@@ -19,7 +20,13 @@ Imports:
     gridExtra,
     abind,
     psych,
-    Rcpp
+    Rcpp (>= 1.0.12),
+    RcppProgress
+Depends: 
+    R (>= 4.1.0),
+    bsvars,
+    bsvarSIGNs
+LinkingTo: Rcpp, RcppArmadillo, RcppProgress
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
@@ -30,5 +37,4 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-LinkingTo: Rcpp, RcppArmadillo, RcppProgress
 
