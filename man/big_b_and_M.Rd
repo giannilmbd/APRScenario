@@ -16,7 +16,10 @@ big_b_and_M(h, n_draws, n_var, n_p, data_ = Z)
 
 \item{n_p}{Number of lags}
 
-\item{data_}{(matrix optional) The data, stacking Y over X (data and laggs) -- columns are observations (default is Z produced by gen_mats)}
+\item{data_}{(matrix optional) The data, stacking Y over X (data and laggs)
+-- columns are observations (default is Z produced by gen_mats)
+NB: this is not necessarily the same as the data used to estimate the model
+If run counterfactuals in previoius historical period (ie not forecast) must pass the data up to previous period relative to counterfactual}
 }
 \value{
 the big_b and big_M matrices of mean and IRF

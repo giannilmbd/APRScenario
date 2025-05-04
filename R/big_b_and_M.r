@@ -5,7 +5,10 @@
 #' @param n_draws Number of draws
 #' @param n_var Number of variables
 #' @param n_p Number of lags
-#' @param data_ (matrix optional) The data, stacking Y over X (data and laggs) -- columns are observations (default is Z produced by gen_mats)
+#' @param data_ (matrix optional) The data, stacking Y over X (data and laggs) 
+#'        -- columns are observations (default is Z produced by gen_mats)
+#'        NB: this is not necessarily the same as the data used to estimate the model
+#'        If run counterfactuals in previoius historical period (ie not forecast) must pass the data up to previous period relative to counterfactual
 #' @returns the big_b and big_M matrices of mean and IRF
 #' @export
 #' @import dplyr
@@ -15,7 +18,7 @@ big_b_and_M<-function(h,n_draws,n_var,n_p,data_=Z){
   M_h=list()
 
   for(cnt in 1:h){
-    tmp<-mat_forc(cnt,n_draws,n_var,n_p,data_=Z)
+    tmp<-mat_forc(cnt,n_draws,n_var,n_p,data_=data_)
     b_h<-tmp[[1]]
     M_h[[cnt]]<-tmp[[2]][[cnt]]
     big_b[1,(1+n_var*(cnt-1)):(cnt*n_var),]<-b_h

@@ -14,7 +14,7 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
   int n_draws = big_b.n_slices;
   int k_0 = obs.size() * h;
 
-  // Fix: check if *any* value in shocks is not NA
+  // check if *any* value in shocks is not NA
   bool has_shocks = std::any_of(shocks.begin(), shocks.end(), [](int val) {
     return val != NA_INTEGER;
   });
@@ -31,11 +31,11 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
   std::vector<mat> mu_y_vec(n_draws);
   std::vector<mat> Sigma_y_vec(n_draws);
 
-  Progress p(n_draws, true);
-  Rcpp::Rcout << "Running full_scenarios_core...\n" << std::flush;
+  // Progress p(n_draws, true);
+  Rcpp::Rcout << "Running scenarios...\n" << std::flush;
 
   for (int d = 0; d < n_draws; ++d) {
-    if (Progress::check_abort()) return List::create();
+    // if (Progress::check_abort()) return List::create();
 
     mat b = big_b.slice(d);   // (1 x k)
     mat M = big_M.slice(d);   // (nM x k)
@@ -104,7 +104,7 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
     mu_y_vec[d] = mu_y;
     Sigma_y_vec[d] = Sigma_y;
 
-    p.increment();
+    // p.increment();
   }
 
   return List::create(

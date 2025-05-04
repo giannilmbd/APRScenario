@@ -13,7 +13,10 @@
 #' @param n_draws (integer) Number of draws
 #' @param n_var (integer) Number of variables
 #' @param n_p (integer) Number of lags
-#' @param data_ (matrix optional) The data, stacking Y over X (data and laggs) -- columns are observations (default is Z produced by gen_mats)
+#' @param data_ (matrix optional) The data, stacking Y over X (data and laggs) 
+#'        -- columns are observations (default is Z produced by gen_mats)
+#'        NB: this is not necessarily the same as the data used to estimate the model
+#'        If run counterfactuals in previoius historical period (ie not forecast) must pass the data up to previous period relative to counterfactual
 #' @returns the big_b and big_M matrices of mean and IRF
 #' @export
 #' @import dplyr
@@ -110,7 +113,7 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=Z){
 
   for(cnt in 1:n_p){
     ylagged<-parallel::mclapply(1:n_draws,function(d){
-      ylagged[,,d]+t(Z[(1+n_var*(cnt-1)):(n_var*cnt),ncol(Z)])%*%N_p_list[[cnt]][[h]][,,d]}, mc.cores = parallel::detectCores()-1) %>% simplify2array()
+      ylagged[,,d]+t(data_[(1+n_var*(cnt-1)):(n_var*cnt),ncol(data_)])%*%N_p_list[[cnt]][[h]][,,d]}, mc.cores = parallel::detectCores()-1) %>% simplify2array()
 
   }
   # fix the order of dimensions of ylagged
