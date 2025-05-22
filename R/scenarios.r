@@ -36,7 +36,7 @@ scenarios <- function(h = 3, path = NULL, obs = NULL, shocks = NULL,
   n_draws <- n_sample
 
   shock_idx <- if (any(is.na(shocks))) NA_integer_ else as.integer(shocks)
-
+  if (!is.null(g)) g <- as.numeric(t(g)) # flatten g as expected by the cpp file
   # Call C++ core with optional g and Sigma_g
   out <-
     full_scenarios_core(big_b, big_M,
