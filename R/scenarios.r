@@ -38,7 +38,7 @@ scenarios <- function(h = 3, path = NULL, obs = NULL, shocks = NULL,
   shock_idx <- if (any(is.na(shocks))) NA_integer_ else as.integer(shocks)
 
   # Call C++ core with optional g and Sigma_g
-  out <- if (!is.null(g) && !is.null(Sigma_g)) {
+  out <-
     full_scenarios_core(big_b, big_M,
                         as.integer(obs),
                         as.numeric(path),
@@ -47,14 +47,7 @@ scenarios <- function(h = 3, path = NULL, obs = NULL, shocks = NULL,
                         n_var = n_var,
                         g_ = g,
                         Sigma_g_ = Sigma_g)
-  } else {
-    full_scenarios_core(big_b, big_M,
-                        as.integer(obs),
-                        as.numeric(path),
-                        shock_idx,
-                        h = h,
-                        n_var = n_var)
-  }
+
 
   nM <- dim(big_M)[1]
   list(
