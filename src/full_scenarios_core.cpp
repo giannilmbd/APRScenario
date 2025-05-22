@@ -8,7 +8,7 @@ using namespace arma;
 
 // [[Rcpp::export]]
 List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
-                         const IntegerVector& obs, const NumericMatrix& path,
+                         const IntegerVector& obs, const NumericVector& path,
                          const IntegerVector& shocks, int h, int n_var,
                          Nullable<arma::vec> g_ = R_NilValue,
                          Nullable<arma::mat> Sigma_g_ = R_NilValue) {
@@ -44,10 +44,14 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
     }
 
     mat f(k_0 + k_s, 1, fill::zeros);
+    if (path.size() != obs.size() * h) {
+      stop("path must be of length obs × h");
+    }
     for (int j = 0; j < obs.size(); ++j) {
       for (int t = 0; t < h; ++t) {
         int i_f = j * h + t;
-        f(i_f, 0) = path(j, t);
+        int i_path = t * obs.size() + j; // column-major reshape
+        f(i_f, 0) = path[i_path];
       }
     }
 
@@ -101,6 +105,14 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
 
     mat mu_y = b_t + M_t * mu_eps;
     mat Sigma_y = M_t * M + (M_t * D_ast) * (Omega_f - D * D.t()) * (D_ast.t() * M);
+
+    // Diagnostic: ensure conditional forecast matches imposed path
+    vec mu_y_proj = C_h * mu_y;
+    for (int i = 0; i < mu_y_proj.n_elem; ++i) {
+      if (std::abs(mu_y_proj(i) - f(i, 0)) > 1e-6) {
+        Rcpp::warning("Mismatch at constraint %d: predicted=%.8f, imposed=%.8f", i + 1, mu_y_proj(i), f(i, 0));
+      }
+    }
 
     mu_eps_vec[d] = mu_eps;
     Sigma_eps_vec[d] = Sigma_eps;
