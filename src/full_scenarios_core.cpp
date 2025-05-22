@@ -8,7 +8,7 @@ using namespace arma;
 
 // [[Rcpp::export]]
 List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
-                         const IntegerVector& obs, const NumericVector& path,
+                         const IntegerVector& obs, const NumericMatrix& path,
                          const IntegerVector& shocks, int h, int n_var,
                          Nullable<arma::vec> g_ = R_NilValue,
                          Nullable<arma::mat> Sigma_g_ = R_NilValue) {
@@ -44,8 +44,11 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
     }
 
     mat f(k_0 + k_s, 1, fill::zeros);
-    for (int i = 0; i < k_0; ++i) {
-      f(i, 0) = path[i];
+    for (int j = 0; j < obs.size(); ++j) {
+      for (int t = 0; t < h; ++t) {
+        int i_f = j * h + t;
+        f(i_f, 0) = path(j, t);
+      }
     }
 
     mat C_hat = C_h;

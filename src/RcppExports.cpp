@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // full_scenarios_core
-List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M, const IntegerVector& obs, const NumericVector& path, const IntegerVector& shocks, int h, int n_var, Nullable<arma::vec> g_, Nullable<arma::mat> Sigma_g_);
+List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M, const IntegerVector& obs, const NumericMatrix& path, const IntegerVector& shocks, int h, int n_var, Nullable<arma::vec> g_, Nullable<arma::mat> Sigma_g_);
 RcppExport SEXP _APRScenario_full_scenarios_core(SEXP big_bSEXP, SEXP big_MSEXP, SEXP obsSEXP, SEXP pathSEXP, SEXP shocksSEXP, SEXP hSEXP, SEXP n_varSEXP, SEXP g_SEXP, SEXP Sigma_g_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -20,7 +20,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::cube& >::type big_b(big_bSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type big_M(big_MSEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type obs(obsSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type path(pathSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type path(pathSEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type shocks(shocksSEXP);
     Rcpp::traits::input_parameter< int >::type h(hSEXP);
     Rcpp::traits::input_parameter< int >::type n_var(n_varSEXP);
