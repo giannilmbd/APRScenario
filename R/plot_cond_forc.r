@@ -29,7 +29,7 @@ plot_cond_forc<-function(varbl2plot=NULL,y_h_cond=NULL,center=0.5,
 
 
 
-    T.before<-periods[1]%m-%months(mulip*before)
+    T.before<-periods[1]%m-%months(multip*before)
 
   y_h_m<-apply(y_h_cond,c(1),FUN=function(x)quantile(x,0.5)) %>% cond2df(.,name = 'center')
   y_h_l<-apply(y_h_cond,c(1),FUN=function(x)quantile(x,0.16))%>% cond2df(.,name = 'lower')
