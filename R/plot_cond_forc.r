@@ -7,6 +7,8 @@
 #' @param upper (optional, default 0.84) quantile of upper range
 #' @param T.start start date of the forecast
 #' @param T.end end of the forecast
+#' @param before (integer: optional) periods of data in the plot: default 8 periods
+#' @param freq (optional, default 'quarter') frequency of the data (eg 'quarter' or 'month')
 #' @param y_data Data used in the estimation eg t(specification$get_data_matrices()$Y) %>% as.data.frame(); true_data$hor=dates
 #' @returns list of plot and data used
 #'
@@ -15,9 +17,20 @@
 #' @import dplyr
 #'
 plot_cond_forc<-function(varbl2plot=NULL,y_h_cond=NULL,center=0.5,
-                         lower=0.16,upper=0.84,T.start=NULL,T.end=NULL,y_data=NULL){
-  dates_date<-seq.Date(from=as.Date(y_data$hor[1]),to=as.Date(T.end),by='quarter')
+                         lower=0.16,upper=0.84,T.start=NULL,T.end=NULL,
+                         before = NULL,freq='quarter',y_data=NULL){
+  dates_date<-seq.Date(from=as.Date(y_data$hor[1]),to=as.Date(T.end),by=freq)
   periods<-dates_date[dates_date>=T.start&dates_date<=T.end]
+  if(freq=='quarter'){
+    multip<-3
+  }else{
+    multip<-1
+  }
+
+
+
+    T.before<-periods[1]%m-%months(mulip*before)
+
   y_h_m<-apply(y_h_cond,c(1),FUN=function(x)quantile(x,0.5)) %>% cond2df(.,name = 'center')
   y_h_l<-apply(y_h_cond,c(1),FUN=function(x)quantile(x,0.16))%>% cond2df(.,name = 'lower')
   y_h_u<-apply(y_h_cond,c(1),FUN=function(x)quantile(x,0.84))%>% cond2df(.,name = 'upper')
@@ -43,7 +56,7 @@ plot_cond_forc<-function(varbl2plot=NULL,y_h_cond=NULL,center=0.5,
   cond.for[cond.for$hor<T.start,'center']<-NA
 
 
-  p<-ggplot(data=cond.for[cond.for$variable==varbl2plot,],aes(x=hor))+
+  p<-ggplot(data=cond.for[cond.for$variable==varbl2plot&cond.for$hor>=T.before,],aes(x=hor))+
     geom_line(aes(y=center,linetype='dashed'))+
     geom_line(aes(y=data,linetype='solid'),color='blue')+ylab(varbl2plot)+
     geom_ribbon(aes(ymax=upper,ymin=lower),fill='pink',alpha=0.5)+xlab('')+

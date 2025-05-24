@@ -12,6 +12,8 @@ plot_cond_forc(
   upper = 0.84,
   T.start = NULL,
   T.end = NULL,
+  before = NULL,
+  freq = "quarter",
   y_data = NULL
 )
 }
@@ -29,6 +31,10 @@ plot_cond_forc(
 \item{T.start}{start date of the forecast}
 
 \item{T.end}{end of the forecast}
+
+\item{before}{(integer: optional) periods of data in the plot: default 8 periods}
+
+\item{freq}{(optional, default 'quarter') frequency of the data (eg 'quarter' or 'month')}
 
 \item{y_data}{Data used in the estimation eg t(specification$get_data_matrices()$Y) \%>\% as.data.frame(); true_data$hor=dates}
 }
