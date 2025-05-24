@@ -2,7 +2,9 @@
 % Please edit documentation in R/scenarios.r
 \name{scenarios}
 \alias{scenarios}
-\title{scenarios function (fully optimized with Rcpp)}
+\title{scenarios function (fully optimized with Rcpp)
+This function computes the mean and covariances to draw from the conditional forecast
+The actual draw is done in the simscen function}
 \usage{
 scenarios(
   h = 3,
@@ -46,4 +48,6 @@ list of mu_eps, Sigma_eps, mu_y, Sigma_y, big_b, big_M, draws_used
 }
 \description{
 scenarios function (fully optimized with Rcpp)
+This function computes the mean and covariances to draw from the conditional forecast
+The actual draw is done in the simscen function
 }

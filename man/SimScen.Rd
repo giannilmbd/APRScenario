@@ -2,7 +2,9 @@
 % Please edit documentation in R/simscen.r
 \name{SimScen}
 \alias{SimScen}
-\title{simscen function (optimized)}
+\title{simscen function
+This function takes the mean and covariance of the conditional forecast to draw from the conditional forecast distribution
+The shock uncertainty is included in the simulation by default, but can be turned off.}
 \usage{
 SimScen(
   mu_eps,
@@ -14,7 +16,8 @@ SimScen(
   n_sim,
   h,
   varbls,
-  idx_sampled = 1:dim(mu_eps)[3]
+  idx_sampled = 1:dim(mu_eps)[3],
+  shock_uncertainty = TRUE
 )
 }
 \arguments{
@@ -37,10 +40,14 @@ SimScen(
 \item{varbls}{variable names}
 
 \item{idx_sampled}{index of random sample to use instead of full draws (from scenarios)}
+
+\item{shock_uncertainty}{(logical; optional) whether to include uncertainty in shocks (default is TRUE)}
 }
 \value{
 conditional forecast path and distribution
 }
 \description{
-simscen function (optimized)
+simscen function
+This function takes the mean and covariance of the conditional forecast to draw from the conditional forecast distribution
+The shock uncertainty is included in the simulation by default, but can be turned off.
 }
