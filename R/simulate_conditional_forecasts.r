@@ -26,5 +26,6 @@ simulate_conditional_forecasts <- function(mu_y, Sigma_y, varnames, n_sim = 1000
     sims[,,d] <- t(MASS::mvrnorm(n_sim, mu = mu_y[,1,d], Sigma = Sigma_y[,,d]))
   }
   sim_red<-matrix(aperm(sims,c(1,3,2)),nrow=dim(sims)[1])
+  rownames(sim_red)<-state_names
   return(sim_red)
 }
