@@ -21,7 +21,7 @@ simulate_conditional_forecasts <- function(mu_y, Sigma_y, varnames, n_sim = 1000
 
   sims <- array(NA_real_, dim = c(n_state, n_sim, n_draws),
                 dimnames = list(state_names, NULL, NULL))
-
+  set.seed(12345)
   for (d in seq_len(n_draws)) {
     sims[,,d] <- t(MASS::mvrnorm(n_sim, mu = mu_y[,1,d], Sigma = Sigma_y[,,d]))
   }
