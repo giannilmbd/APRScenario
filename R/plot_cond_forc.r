@@ -18,7 +18,7 @@
 #'
 plot_cond_forc<-function(varbl2plot=NULL,y_h_cond=NULL,center=0.5,
                          lower=0.16,upper=0.84,T.start=NULL,T.end=NULL,
-                         before = NULL,freq='quarter',y_data=NULL){
+                         before = 8,freq='quarter',y_data=NULL){
   dates_date<-seq.Date(from=as.Date(y_data$hor[1]),to=as.Date(T.end),by=freq)
   periods<-dates_date[dates_date>=T.start&dates_date<=T.end]
   if(freq=='quarter'){

@@ -12,7 +12,7 @@ plot_cond_forc(
   upper = 0.84,
   T.start = NULL,
   T.end = NULL,
-  before = NULL,
+  before = 8,
   freq = "quarter",
   y_data = NULL
 )
