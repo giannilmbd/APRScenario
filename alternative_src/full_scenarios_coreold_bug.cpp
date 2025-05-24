@@ -21,6 +21,8 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
   int k_s = has_shocks ? shocks.size() * h : 0;
 
   vec g = g_.isNotNull() ? as<vec>(g_) : vec(k_s, fill::zeros);
+  mat Sigma_g = Sigma_g_.isNotNull() ? as<mat>(Sigma_g_) : eye(k_s, k_s);
+  mat L_g = chol(Sigma_g, "lower");
 
   std::vector<mat> mu_eps_vec(n_draws);
   std::vector<mat> Sigma_eps_vec(n_draws);
@@ -71,28 +73,23 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
     mat D = C_hat * M_t;
     mat D_ast = pinv(D);
 
-    mat Omega_f_hat;
-    if (Sigma_g_.isNotNull()) {
-      mat Sigma_g = as<mat>(Sigma_g_);
-      mat Omega_f = Sigma_g;
+    mat Omega_f = C_h * M_t * trans(C_h * M_t);
+    if (has_shocks) {
       mat Z0(k_0, k_s, fill::zeros);
       mat Z1(k_s, k_0, fill::zeros);
-      mat I_ks = eye(k_s, k_s);
-      Omega_f_hat = join_vert(
+      mat Omega_ext = join_vert(
         join_horiz(Omega_f, Z0),
-        join_horiz(Z1, I_ks)
+        join_horiz(Z1, Sigma_g)
       );
-    } else {
-      Omega_f_hat = D * D.t();
+      Omega_f = Omega_ext;
     }
 
     mat mu_eps = D_ast * (f - C_hat * b_t);
     mat I = eye(D_ast.n_rows, D_ast.n_rows);
-    mat Sigma_eps = D_ast * Omega_f_hat * D_ast.t() + (I - D_ast * D) * (I - D_ast * D).t();
+    mat Sigma_eps = D_ast * Omega_f * D_ast.t() + (I - D_ast * D) * (I - D_ast * D).t();
 
     vec eps_draw = mu_eps;
-    if (has_shocks && Sigma_g_.isNotNull()) {
-      mat L_g = chol(as<mat>(Sigma_g_), "lower");
+    if (has_shocks) {
       vec z = randn(k_s);
       vec delta = g + L_g * z;
       for (int j = 0; j < shocks.size(); ++j) {
@@ -107,7 +104,7 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
     }
 
     mat mu_y = b_t + M_t * mu_eps;
-    mat Sigma_y = M_t * M + (M_t * D_ast) * (Omega_f_hat - D * D.t()) * (D_ast.t() * M);
+    mat Sigma_y = M_t * M + (M_t * D_ast) * (Omega_f - D * D.t()) * (D_ast.t() * M);
 
     // Diagnostic: ensure conditional forecast matches imposed path
     vec mu_y_proj = C_h * mu_y;
