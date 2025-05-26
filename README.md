@@ -11,6 +11,10 @@ See the application code APRScenario.Rmd.
 ```
 devtools::install_github("giannilmbd/APRScenario", ref = "master")
 ```
+See also the forked bsvarSIGNs with parallelized draws of the rotation matrix
+```
+devtools::install_github("giannilmbd/bsvarSIGNs", ref = "master")
+```
 
 You can also download the tar.gz package from the *tar-package branch* and install in in R with 
 
