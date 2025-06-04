@@ -5,7 +5,7 @@
 #' @param h forecast horizon
 #' @param path conditional path of observables
 #' @param obs position of observable(s)
-#' @param shocks position of non-driving shocks (NA if all driving)
+#' @param free_shocks position of non-driving shocks (NA if all driving)
 #' @param n_draws Number of posterior draws
 #' @param n_sample Number of draws to sample (<= n_draws)
 #' @param n_var Number of variables
@@ -22,11 +22,22 @@
 #' @import RcppProgress
 
 
-scenarios <- function(h = 3, path = NULL, obs = NULL, shocks = NULL,
+scenarios <- function(h = 3, path = NULL, obs = NULL, free_shocks = NULL,
                      n_draws, n_sample = n_draws, n_var, n_p, data_ = Z,
                      g = NULL, Sigma_g = NULL) {
 
   stopifnot(length(path) == length(obs) * h)
+  if(is.null(dim(path))){
+    if(length(path)!=h){
+      print('length of path is not equal h')
+    }
+  }else{
+    if(dim(path)[1]!=length(obs)){
+      print("path must be n_constrained_vars x h")
+      stop()
+    }
+
+  }
 
   tmp <- big_b_and_M(h, n_draws, n_var, n_p, data_ = data_)
   big_b <- tmp[[1]]
@@ -37,7 +48,7 @@ scenarios <- function(h = 3, path = NULL, obs = NULL, shocks = NULL,
   big_M <- big_M[, , draws_to_use, drop = FALSE]
   n_draws <- n_sample
 
-  shock_idx <- if (any(is.na(shocks))) NA_integer_ else as.integer(shocks)
+  shock_idx <- if (any(is.na(free_shocks))) NA_integer_ else as.integer(free_shocks)
   if (!is.null(g)) g <- as.numeric(t(g)) # flatten g as expected by the cpp file
   # Call C++ core with optional g and Sigma_g
   out <-

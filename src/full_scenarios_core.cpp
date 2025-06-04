@@ -22,6 +22,21 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
 
   vec g = g_.isNotNull() ? as<vec>(g_) : vec(k_s, fill::zeros);
 
+  // Rcpp::Rcout << "obs (constrained indices): ";
+  // for (int i = 0; i < obs.size(); ++i) {
+  //   Rcpp::Rcout << obs[i] << " ";
+  // }
+  // Rcpp::Rcout << std::endl;
+  //
+  // Rcpp::Rcout << "path (flattened): ";
+  // for (int i = 0; i < path.size(); ++i) {
+  //   Rcpp::Rcout << path[i] << " ";
+  // }
+  // Rcpp::Rcout << std::endl;
+
+
+
+
   std::vector<mat> mu_eps_vec(n_draws);
   std::vector<mat> Sigma_eps_vec(n_draws);
   std::vector<mat> mu_y_vec(n_draws);
@@ -32,7 +47,7 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
     mat M = big_M.slice(d);
     mat M_t = trans(M);
     mat b_t = trans(b);
-
+    // Rcpp::Rcout << "\nDraw " << d + 1 << " — b_t:\n" << b_t << std::endl;
     mat C_h(k_0, n_var * h, fill::zeros);
     for (int j = 0; j < obs.size(); ++j) {
       int var_idx = obs[j] - 1;
@@ -69,6 +84,12 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
     }
 
     mat D = C_hat * M_t;
+
+    double cond_D = arma::cond(D);  // D is arma::mat
+
+    if (cond_D > 1e8) {  // Or any threshold you consider problematic
+      Rcpp::Rcout << "WARNING: D is ill-conditioned! cond(D) = " << cond_D << "\n";
+    }
     mat D_ast = pinv(D);
 
     mat Omega_f_hat;
@@ -87,6 +108,9 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
     }
 
     mat mu_eps = D_ast * (f - C_hat * b_t);
+
+    // Rcpp::Rcout << "mu_eps (D_ast * (f - C_hat * b_t)):\n" << mu_eps << std::endl;
+
     mat I = eye(D_ast.n_rows, D_ast.n_rows);
     mat Sigma_eps = D_ast * Omega_f_hat * D_ast.t() + (I - D_ast * D) * (I - D_ast * D).t();
 
@@ -107,11 +131,13 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
     }
 
     mat mu_y = b_t + M_t * mu_eps;
+    // Rcpp::Rcout << "Constrained forecast at obs (C_h * mu_y):\n" << (C_h * mu_y).t() << std::endl;
+
     mat Sigma_y = M_t * M + (M_t * D_ast) * (Omega_f_hat - D * D.t()) * (D_ast.t() * M);
 
     // Diagnostic: ensure conditional forecast matches imposed path
     vec mu_y_proj = C_h * mu_y;
-    for (int i = 0; i < mu_y_proj.n_elem; ++i) {
+    for (arma::uword i = 0; i < mu_y_proj.n_elem; ++i) {
       if (std::abs(mu_y_proj(i) - f(i, 0)) > 1e-6) {
         Rcpp::warning("Mismatch at constraint %d: predicted=%.8f, imposed=%.8f", i + 1, mu_y_proj(i), f(i, 0));
       }

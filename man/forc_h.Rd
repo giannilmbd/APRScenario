@@ -4,7 +4,7 @@
 \alias{forc_h}
 \title{forc_h function}
 \usage{
-forc_h(h = 1, n_sim = 200, n_draws, n_var, n_p)
+forc_h(h = 1, n_sim = 200, n_draws, n_var, n_p, data_ = Z)
 }
 \arguments{
 \item{h}{forecast horizon}
@@ -16,6 +16,8 @@ forc_h(h = 1, n_sim = 200, n_draws, n_var, n_p)
 \item{n_var}{Number of variables}
 
 \item{n_p}{Number of lags}
+
+\item{data_}{Optional matrix of data n_var*h+1 x T (default is Z)}
 }
 \value{
 a matrix of unconditional forecasts

@@ -13,7 +13,7 @@
 #' @param n_draws (integer) Number of draws
 #' @param n_var (integer) Number of variables
 #' @param n_p (integer) Number of lags
-#' @param data_ (matrix optional) The data, stacking Y over X (data and laggs) 
+#' @param data_ (matrix optional) The data, stacking Y over X (data and laggs)
 #'        -- columns are observations (default is Z produced by gen_mats)
 #'        NB: this is not necessarily the same as the data used to estimate the model
 #'        If run counterfactuals in previoius historical period (ie not forecast) must pass the data up to previous period relative to counterfactual
@@ -43,7 +43,7 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=Z){
           }else{
             tmp1<-diag(0,n_var)
           }
-          (K_h[[i-j]][,,d])%*%(tmp1)} , mc.cores = parallel::detectCores()-1) %>% simplify2array()
+          (K_h[[i-j]][,,d])%*%(tmp1)} , mc.cores = parallel::detectCores()-1) %>% abind::abind(.,along=3)
 
       }
       K_h[[i]]<-tmp2+K_0
@@ -59,7 +59,7 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=Z){
       tmp2<-0
       for(j in 1:min(i-1,n_p)){
 
-        tmp2<-tmp2+parallel::mclapply(1:n_draws, function(d){M_h[[j]][,,d]%*%B_list[[j]][,,d]} , mc.cores = parallel::detectCores()-1) %>% simplify2array()
+        tmp2<-tmp2+parallel::mclapply(1:n_draws, function(d){M_h[[j]][,,d]%*%B_list[[j]][,,d]} , mc.cores = parallel::detectCores()-1) %>% abind::abind(.,along=3)
 
       }
       M_h[[i]]<-tmp2
@@ -84,7 +84,7 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=Z){
 
             tmp00[[i-j]][,,d]%*%B_list[[j]][,,d]}
             ,mc.cores = parallel::detectCores()-1
-          ) %>% simplify2array()
+          ) %>% abind::abind(.,along=3)
 
 
         }
@@ -103,7 +103,7 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=Z){
 
 
   # b_h in two parts: the intercept and the lagged variables (from t-p to t)
-  b_h<-parallel::mclapply(1:n_draws, function(d){intercept[,d]%*%K_h[[h]][,,d]} , mc.cores = parallel::detectCores()-1) %>% simplify2array(.,higher=T)
+  b_h<-parallel::mclapply(1:n_draws, function(d){intercept[,d]%*%K_h[[h]][,,d]} , mc.cores = parallel::detectCores()-1) %>% abind::abind(.,along=3)
 
   ## part including lagged variables
   ### first create zeros 1xn_varxn_draws
@@ -113,7 +113,7 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=Z){
 
   for(cnt in 1:n_p){
     ylagged<-parallel::mclapply(1:n_draws,function(d){
-      ylagged[,,d]+t(data_[(1+n_var*(cnt-1)):(n_var*cnt),ncol(data_)])%*%N_p_list[[cnt]][[h]][,,d]}, mc.cores = parallel::detectCores()-1) %>% simplify2array()
+      ylagged[,,d]+t(data_[(1+n_var*(cnt-1)):(n_var*cnt),ncol(data_)])%*%N_p_list[[cnt]][[h]][,,d]}, mc.cores = parallel::detectCores()-1) %>% abind::abind(.,along=3)
 
   }
   # fix the order of dimensions of ylagged

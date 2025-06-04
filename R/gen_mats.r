@@ -23,7 +23,7 @@ gen_mats<-function(posterior=NULL,n_draws,n_var,n_p){
   #Q<<-posterior$posterior$Q # Rotation matrices
   # remember to transpose
   M_list <<- parallel::mclapply(1:dim(M_inv)[3], function(d) solve(t(M_inv[,,d])), mc.cores = parallel::detectCores()-1)
-  M <<- simplify2array(M_list)
+  M <<-  abind::abind(M_list, along = 3)
   B<<-posterior$posterior$A # this is lags plus constant (in the last row... see last row of specification$data_matrices$X)
   intercept<<-B[,dim(B)[2],]
   B<<-B[,-dim(B)[2],]

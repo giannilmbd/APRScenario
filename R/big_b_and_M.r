@@ -16,7 +16,7 @@ big_b_and_M<-function(h,n_draws,n_var,n_p,data_=Z){
   big_b<-array(0,dim=c(1,n_var*h,n_draws))
   big_M<-array(0,dim=c(n_var*h,n_var*h,n_draws))
   M_h=list()
-
+  # Initialize M_h with the first M matrix
   for(cnt in 1:h){
     tmp<-mat_forc(h = cnt, n_draws = n_draws,n_var = n_var,n_p = n_p,data_=data_)
     b_h<-tmp[[1]]

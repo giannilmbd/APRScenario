@@ -10,7 +10,7 @@ scenarios(
   h = 3,
   path = NULL,
   obs = NULL,
-  shocks = NULL,
+  free_shocks = NULL,
   n_draws,
   n_sample = n_draws,
   n_var,
@@ -27,7 +27,7 @@ scenarios(
 
 \item{obs}{position of observable(s)}
 
-\item{shocks}{position of non-driving shocks (NA if all driving)}
+\item{free_shocks}{position of non-driving shocks (NA if all driving)}
 
 \item{n_draws}{Number of posterior draws}
 

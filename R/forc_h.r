@@ -5,11 +5,12 @@
 #' @param n_draws Number of draws
 #' @param n_var Number of variables
 #' @param n_p Number of lags
+#' @param data_ Optional matrix of data n_var*h+1 x T (default is Z)
 #' @returns a matrix of unconditional forecasts
 #' @export
 #' @import dplyr
 
-forc_h<-function(h=1,n_sim=200,n_draws,n_var,n_p){
+forc_h<-function(h=1,n_sim=200,n_draws,n_var,n_p,data_=Z){
 
   # this function takes the forecast matrices b and M and combines with simulated future shocks
   # the output will be the forecsast on n_var, h-horizon,n_draws and n_sim (last two dims eventually mixed together)
@@ -17,6 +18,7 @@ forc_h<-function(h=1,n_sim=200,n_draws,n_var,n_p){
   y_h=array(rep(rep(rep(rep(0,n_var),h),n_draws),n_sim),dim=c(n_var,h,n_draws,n_sim))
   # record also the shock and history parts separately
   shock_h=array(rep(rep(rep(rep(0,n_var),h),n_draws),n_sim),dim=c(n_var,h,n_draws,n_sim))
+
   hist_h=array(rep(rep(rep(rep(0,n_var),h),n_draws),n_sim),dim=c(n_var,h,n_draws,n_sim))
 
   epsilon<-parallel::mclapply(1:n_draws,function(d)MASS::mvrnorm(n = n_sim, mu = rep(0,n_var), Sigma = diag(1,n_var)),
@@ -27,7 +29,7 @@ forc_h<-function(h=1,n_sim=200,n_draws,n_var,n_p){
 
 
   for(cnt in 1:h){
-    tmp<-mat_forc(cnt,n_draws,n_var,n_p)
+    tmp<-mat_forc(cnt,n_draws,n_var,n_p,data_=data_)
     b_h<-tmp[[1]]
     M_h<-tmp[[2]]
 
