@@ -85,11 +85,7 @@ List full_scenarios_core(const arma::cube& big_b, const arma::cube& big_M,
 
     mat D = C_hat * M_t;
 
-    double cond_D = arma::cond(D);  // D is arma::mat
-
-    if (cond_D > 1e8) {  // Or any threshold you consider problematic
-      Rcpp::Rcout << "WARNING: D is ill-conditioned! cond(D) = " << cond_D << "\n";
-    }
+// USING MOORE-PENROSE PSEUDO-INVERSE
     mat D_ast = pinv(D);
 
     mat Omega_f_hat;
