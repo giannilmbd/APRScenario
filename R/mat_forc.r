@@ -23,8 +23,9 @@
 #' @import dplyr
 #'
 mat_forc<-function(h=1,n_draws,n_var,n_p,data_=NULL,matrices=NULL){
-  # Use single core if running in CRAN environment
-  cores <- if(!identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "")) 1 else parallel::detectCores()-1
+  # Use single core if running in CRAN environment or on Windows
+  cores <- if(!identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "")) 1 else min(2, parallel::detectCores()-1)
+  if (.Platform$OS.type == "windows") cores <- 1
   
   # Get matrices from calling environment if not provided
   if(is.null(matrices)) {

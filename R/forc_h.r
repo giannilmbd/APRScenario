@@ -46,8 +46,9 @@ forc_h<-function(h=1,n_sim=200,data_=NULL,posterior=NULL,matrices=NULL){
 
   hist_h=array(rep(rep(rep(rep(0,n_var),h),n_draws),n_sim),dim=c(n_var,h,n_draws,n_sim))
 
-  # Use single core if running in CRAN environment
-  cores <- if(!identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "")) 1 else parallel::detectCores()-1
+  # Use single core if running in CRAN environment or on Windows
+  cores <- if(!identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "")) 1 else min(2, parallel::detectCores()-1)
+  if (.Platform$OS.type == "windows") cores <- 1
   
   epsilon<-parallel::mclapply(1:n_draws,function(d)MASS::mvrnorm(n = n_sim, mu = rep(0,n_var), Sigma = diag(1,n_var)),
                               mc.cores = cores) %>% simplify2array()

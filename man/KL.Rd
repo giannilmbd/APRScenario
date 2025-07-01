@@ -5,9 +5,9 @@
 \title{KL function
 APR suggest this measure to assess the "plausibility" of the conditional forecast.
 It is based on the Kullback-Leibler measure of distance between the unconditional forecast and the
-conditiona/scenario forecast.}
+conditional/scenario forecast.}
 \usage{
-KL(Sigma_eps, mu_eps, h, plot_ = F, max_cores = 2)
+KL(Sigma_eps, mu_eps, h, plot_ = F, max_cores = NULL)
 }
 \arguments{
 \item{Sigma_eps}{variance of innovation}
@@ -18,7 +18,7 @@ KL(Sigma_eps, mu_eps, h, plot_ = F, max_cores = 2)
 
 \item{plot_}{logical; if TRUE then a histogram of the KL measure is returned}
 
-\item{max_cores}{maximum number of cores to use for parallel processing (default: 2)}
+\item{max_cores}{maximum number of cores to use for parallel processing (default: NULL, uses CRAN-compliant detection with Windows=1)}
 }
 \value{
 Returns the APR 'q': ie distance from a fair binomial distribution
@@ -27,5 +27,5 @@ Returns the APR 'q': ie distance from a fair binomial distribution
 KL function
 APR suggest this measure to assess the "plausibility" of the conditional forecast.
 It is based on the Kullback-Leibler measure of distance between the unconditional forecast and the
-conditiona/scenario forecast.
+conditional/scenario forecast.
 }

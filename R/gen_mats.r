@@ -31,8 +31,10 @@ gen_mats<-function(posterior=NULL, specification=NULL){
   M_inv<-posterior$posterior$B # This already include Q i.e. B^{-1}=A_0^{-1}%*%Q
   #Q<-posterior$posterior$Q # Rotation matrices
   # remember to transpose
-  # Use single core if running in CRAN environment
-  cores <- if(!identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "")) 1 else parallel::detectCores()-1
+  # Use single core if running in CRAN environment or on Windows
+  cores <- if(!identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "")) 1 else min(2, parallel::detectCores()-1)
+  if (.Platform$OS.type == "windows") cores <- 1
+  
   M_list <- parallel::mclapply(1:dim(M_inv)[3], function(d) solve(t(M_inv[,,d])), mc.cores = cores)
   M <-  abind::abind(M_list, along = 3)
   B<-posterior$posterior$A # this is lags plus constant (in the last row... see last row of specification$data_matrices$X)

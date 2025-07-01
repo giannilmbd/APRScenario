@@ -18,7 +18,7 @@ knitr::opts_chunk$set(cache = TRUE, echo = FALSE, include = TRUE, warning = FALS
 
 # Scenario analysis
 
-Following Andolin-Diaz, Petrella and Rubio-Ramirez (JME 2021; APR henceforth) this document derives the necessary functions to produce scenario analyses. The BVAR is estimated using the package BVARSign. The output of the estimation is then used to create the objects necessary for scenario analysis.
+Following Antolin-Diaz, Petrella and Rubio-Ramirez (JME 2021; APR henceforth) this document derives the necessary functions to produce scenario analyses. The BVAR is estimated using the package `bsvarSigns`. The output of the estimation is then used to create the objects necessary for scenario analysis.
 
 ## Create Forecast Functions
 
@@ -319,7 +319,7 @@ specification  = bsvarSIGNs::specify_bsvarSIGN$new(data=as.matrix(X,3,3),
                                        sign_irf = sr[1:3,1:3])
 
 # estimate the model
-posterior      = bsvarSIGNs::estimate(specification, S = n_draws,draw_strategy = 3) # USING MY FORKED VERSION; MUST CHOSE A DRAWING STRATEGY; SEE HELP
+posterior      = estimate(specification, S = n_draws) # SEE FORKED VERSION FOR PARALLEL Q ROTATION DRAWS
 
 # compute and plot impulse responses
 irf            = bsvars::compute_impulse_responses(posterior, horizon = 40)
@@ -367,7 +367,7 @@ knitr::include_graphics("figures/irf_bvars.png")
 
 ## Getting all the necessary matrices
 
-bsvarSIGNs generate a set of matrices that are needed for the computation of the scenarios. The function get_mats(posterior,n_draws,n_var,n_p) makes all the necessary matrices available globally.
+bsvarSIGNs generate a set of matrices that are needed for the computation of the scenarios. The function gen_mats(posterior,specification) generate the necessary matrices for the scenarios.
 
 ```{r Matrices,echo=TRUE}
 # Actual function ---------------

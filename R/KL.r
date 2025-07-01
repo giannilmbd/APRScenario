@@ -1,25 +1,33 @@
 #' KL function
 #' APR suggest this measure to assess the "plausibility" of the conditional forecast.
 #' It is based on the Kullback-Leibler measure of distance between the unconditional forecast and the
-#' conditiona/scenario forecast.
+#' conditional/scenario forecast.
 #'
-#' @param mu_eps mean of innovation
 #' @param Sigma_eps variance of innovation
+#' @param mu_eps mean of innovation
 #' @param h forecast horizon
 #' @param plot_ logical; if TRUE then a histogram of the KL measure is returned
-#' @param max_cores maximum number of cores to use for parallel processing (default: 2)
+#' @param max_cores maximum number of cores to use for parallel processing (default: NULL, uses CRAN-compliant detection with Windows=1)
 #'
 #' @returns Returns the APR 'q': ie distance from a fair binomial distribution
 #'
 #' @export
 #' @import dplyr
 #' @importFrom ggplot2 ggplot geom_histogram aes geom_vline xlab ylab labs theme_minimal
-KL<-function(Sigma_eps,mu_eps,h,plot_=F,max_cores=2){
+KL<-function(Sigma_eps,mu_eps,h,plot_=F,max_cores=NULL){
+  # Use single core if running in CRAN environment or on Windows
+  if(is.null(max_cores)) {
+    cores <- if(!identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "")) 1 else min(2, parallel::detectCores()-1)
+    if (.Platform$OS.type == "windows") cores <- 1
+  } else {
+    cores <- max_cores
+  }
+  
   n_var<-dim(Sigma_eps)[1]/h
   n_draws<-dim(Sigma_eps)[3]
   DKL<-parallel::mclapply(1:n_draws,FUN=function(d){
     0.5*(psych::tr(Sigma_eps[,,d])+t(mu_eps[,,d])%*%mu_eps[,,d]-n_var*h-log(det(Sigma_eps[,,d])))
-  },mc.cores = max_cores) %>% simplify2array()
+  },mc.cores = cores) %>% simplify2array()
 
   q<-0.5*(1+sqrt(1-exp(-2*DKL/(h*n_var))))
 
