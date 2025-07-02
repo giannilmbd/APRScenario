@@ -18,7 +18,7 @@ knitr::opts_chunk$set(cache = TRUE, echo = FALSE, include = TRUE, warning = FALS
 
 # Scenario analysis
 
-Following Antolin-Diaz, Petrella and Rubio-Ramirez (JME 2021; APR henceforth) this document derives the necessary functions to produce scenario analyses. The BVAR is estimated using the package `bsvarSigns`. The output of the estimation is then used to create the objects necessary for scenario analysis.
+Following Antolin-Diaz, Petrella and Rubio-Ramirez (JME 2021; APR henceforth) this document derives the necessary functions to produce scenario analyses. The BVAR is estimated using the package `bsvarSIGNs`. The output of the estimation is then used to create the objects necessary for scenario analysis.
 
 ## Create Forecast Functions
 

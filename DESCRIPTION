@@ -1,5 +1,5 @@
 Package: APRScenario
-Title: Structural Scenario Analysis for Bayesian Structural Vector Autoregression models
+Title: Structural Scenario Analysis for Bayesian Structural Vector Autoregression Models
 Version: 0.0.3.0
 Authors@R: 
     person("Giovanni", "Lombardo", email = "giannilmbd@gmail.com", role = c("aut", "cre"),
