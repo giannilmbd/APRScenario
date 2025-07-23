@@ -20,9 +20,17 @@
 #' @param matrices Optional matrices object from gen_mats() (default taken from calling environment)
 #' @returns the big_b and big_M matrices of mean and IRF
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' library(APRScenario)
+#' data(NKdata)
+#'
+#' # Minimal example with a toy specification
+#' spec <- bsvarSIGNs::specify_bsvarSIGN$new(as.matrix(NKdata[,2:4]), p = 1)
+#' est <- bsvars::estimate(spec, S = 10)  # Use small S for fast test
+#' matrices<-gen_mats(posterior = est, specification = spec)
+#'
 #' # Example usage for matrix forecasting
-#' result <- mat_forc(h = 4, n_draws = 1000, n_var = 3, n_p = 2,
+#' result <- mat_forc(h = 4, n_draws = 10, n_var = 3, n_p = 1,
 #'                    matrices = matrices)
 #' }
 #' @export
@@ -63,7 +71,7 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=NULL,matrices=NULL){
 
         tmp2<-tmp2+parallel::mclapply(1:n_draws, function(d){
           if((j)<=n_p){
-            tmp1<-B_list[[j]][,,d]
+            tmp1<-matrices$B_list[[j]][,,d]
           }else{
             tmp1<-diag(0,n_var)
           }
@@ -77,13 +85,13 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=NULL,matrices=NULL){
 
 
   M_h=list()
-  M_h[[1]]<-M
+  M_h[[1]]<-matrices$M
   if(h>1){
     for(i in 2:h){
       tmp2<-0
       for(j in 1:min(i-1,n_p)){
 
-        tmp2<-tmp2+parallel::mclapply(1:n_draws, function(d){M_h[[j]][,,d]%*%B_list[[j]][,,d]} , mc.cores = cores) %>% abind::abind(.,along=3)
+        tmp2<-tmp2+parallel::mclapply(1:n_draws, function(d){M_h[[j]][,,d]%*%matrices$B_list[[j]][,,d]} , mc.cores = cores) %>% abind::abind(.,along=3)
 
       }
       M_h[[i]]<-tmp2
@@ -96,7 +104,7 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=NULL,matrices=NULL){
 
   for(l in 1:n_p){ # loop through each of the lags
     tmp00<-list()
-    tmp00[[1]]<-B_list[[l]]
+    tmp00[[1]]<-matrices$B_list[[l]]
     if(h>1){ # if h>1 then need to update each of the N_s
 
       for (i in 2:h){
@@ -106,14 +114,14 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=NULL,matrices=NULL){
 
           tmp2<-tmp2+parallel::mclapply(1:n_draws, function(d){
 
-            tmp00[[i-j]][,,d]%*%B_list[[j]][,,d]}
+            tmp00[[i-j]][,,d]%*%matrices$B_list[[j]][,,d]}
             ,mc.cores = cores
           ) %>% abind::abind(.,along=3)
 
 
         }
         if((l+i-1)<=n_p){ # add the linear term if exist
-          tmp=B_list[[l+i-1]]
+          tmp=matrices$B_list[[l+i-1]]
         }else{
           tmp=0
         }
@@ -127,7 +135,7 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=NULL,matrices=NULL){
 
 
   # b_h in two parts: the intercept and the lagged variables (from t-p to t)
-  b_h<-parallel::mclapply(1:n_draws, function(d){intercept[,d]%*%K_h[[h]][,,d]} , mc.cores = cores) %>% abind::abind(.,along=3)
+  b_h<-parallel::mclapply(1:n_draws, function(d){matrices$intercept[,d]%*%K_h[[h]][,,d]} , mc.cores = cores) %>% abind::abind(.,along=3)
 
   ## part including lagged variables
   ### first create zeros 1xn_varxn_draws

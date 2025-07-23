@@ -49,9 +49,17 @@ A=>B                                                                       #
 ##############################################################################
 }
 \examples{
-\dontrun{
+\donttest{
+library(APRScenario)
+data(NKdata)
+
+# Minimal example with a toy specification
+spec <- bsvarSIGNs::specify_bsvarSIGN$new(as.matrix(NKdata[,2:4]), p = 1)
+est <- bsvars::estimate(spec, S = 10)  # Use small S for fast test
+matrices<-gen_mats(posterior = est, specification = spec)
+
 # Example usage for matrix forecasting
-result <- mat_forc(h = 4, n_draws = 1000, n_var = 3, n_p = 2,
+result <- mat_forc(h = 4, n_draws = 10, n_var = 3, n_p = 1,
                    matrices = matrices)
 }
 }

@@ -9,16 +9,15 @@
 #'   \code{n_p}, \code{n_var}, \code{Y}, \code{X}, and \code{Z}.
 #' @examples
 #' \donttest{
-#' # This function requires posterior estimation results from bsvarSIGNs
-#' # Here's a conceptual example of usage:
-#' # library(APRScenario)
-#' # data(NKdata)
-#' # 
-#' # # After running BVAR estimation with bsvarSIGNs:
-#' # # specification <- specify_bsvarSIGN$new(as.matrix(NKdata[,1:3]), p = 2)
-#' # # estimated <- estimate(specification, S = 1000)
-#' # # matrices <- gen_mats(posterior = estimated, specification = specification)
+#' library(APRScenario)
+#' data(NKdata)
+#'
+#' # Minimal example with a toy specification
+#' spec <- bsvarSIGNs::specify_bsvarSIGN$new(as.matrix(NKdata[,2:4]), p = 1)
+#' est <- bsvars::estimate(spec, S = 10)  # Use small S for fast test
+#' gen_mats(posterior = est, specification = spec)
 #' }
+
 #' @export
 #'
 #' @import dplyr

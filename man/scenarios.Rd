@@ -50,17 +50,19 @@ The actual draw is done in the simscen function
 }
 \examples{
 \donttest{
-# Complete workflow example using NKdata
 library(APRScenario)
 data(NKdata)
 
-# This function requires results from BVAR estimation
-# After running: matrices <- gen_mats(...) and having posterior object
-# scenario_result <- scenarios(h = 2, 
-#                              path = c(1.0, 1.1), 
-#                              obs = 1, 
-#                              free_shocks = NA, 
-#                              posterior = posterior, 
-#                              matrices = matrices)
+# Minimal example with a toy specification
+spec <- bsvarSIGNs::specify_bsvarSIGN$new(as.matrix(NKdata[,2:4]), p = 1)
+posterior <- bsvars::estimate(spec, S = 10)  # Use small S for fast test
+matrices<-gen_mats(posterior = posterior, specification = spec)
+# and having posterior object
+ scenario_result <- scenarios(h = 2, 
+                              path = c(1.0, 1.1), 
+                              obs = 1, 
+                              free_shocks = NA, 
+                              posterior = posterior, 
+                              matrices = matrices)
 }
 }
