@@ -7,7 +7,8 @@
 #' @param obs position of observable(s)
 #' @param free_shocks position of non-driving shocks (NA if all driving)
 #' @param n_sample Number of draws to sample (<= n_draws)
-#' @param data_ Optional matrix of data (default taken from matrices$Z)
+#' @param data_ Optional matrix of data (default taken from matrices$Z). Note: the last observation 
+#'        in data_ is used as the starting point; it should not overlap with the scenario forecasting period.
 #' @param g Optional matrix of non-driving shocks
 #' @param Sigma_g Optional covariance matrix of non-driving shocks
 #' @param posterior Optional posterior object (default taken from calling environment)

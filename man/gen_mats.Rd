@@ -4,12 +4,14 @@
 \alias{gen_mats}
 \title{gen_mats function}
 \usage{
-gen_mats(posterior = NULL, specification = NULL)
+gen_mats(posterior = NULL, specification = NULL, max_cores = 1)
 }
 \arguments{
 \item{posterior}{Posterior estimation results (eg from BsvarSIGNs)}
 
 \item{specification}{Optional specification object (default taken from calling environment)}
+
+\item{max_cores}{maximum number of cores to use for parallel processing (default: 1 for Windows compatibility)}
 }
 \value{
 Returns all objects necessary for scenario analysis (e.g., IRF matrix),

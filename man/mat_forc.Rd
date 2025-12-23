@@ -14,7 +14,15 @@ B=>A_0^(-1)*Q and                                                          #
 A=>B                                                                       #
 ##############################################################################}
 \usage{
-mat_forc(h = 1, n_draws, n_var, n_p, data_ = NULL, matrices = NULL)
+mat_forc(
+  h = 1,
+  n_draws,
+  n_var,
+  n_p,
+  data_ = NULL,
+  matrices = NULL,
+  max_cores = 1
+)
 }
 \arguments{
 \item{h}{(integer) forecast horison}
@@ -31,6 +39,8 @@ NB: this is not necessarily the same as the data used to estimate the model
 If run counterfactuals in previoius historical period (ie not forecast) must pass the data up to previous period relative to counterfactual}
 
 \item{matrices}{Optional matrices object from gen_mats() (default taken from calling environment)}
+
+\item{max_cores}{maximum number of cores to use for parallel processing (default: 1 for Windows compatibility)}
 }
 \value{
 the big_b and big_M matrices of mean and IRF

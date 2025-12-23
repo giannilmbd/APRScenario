@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>APRScenario vignette</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">APRScenario vignette</h1>
+
+
+
+<div id="scenario-analysis" class="section level1">
+<h1>Scenario analysis</h1>
+<p>Following Antolin-Diaz, Petrella and Rubio-Ramirez (JME 2021; APR
+henceforth) this document derives the necessary functions to produce
+scenario analyses. The BVAR is estimated using the package
+<code>bsvarSIGNs</code>. The output of the estimation is then used to
+create the objects necessary for scenario analysis.</p>
+<div id="create-forecast-functions" class="section level2">
+<h2>Create Forecast Functions</h2>
+<p>The estimation generates the necessary reduced-form and structural
+matrices for the model</p>
+<p><span class="math inline">\(y_{t+1}=\sum_i^p y_{t+1-i}^{&#39;} B_i
++\varepsilon_{t+1}^{&#39;} M\)</span>. Note that APR use different
+notations than BVARSign. The latter expresses the reduced form BVAR
+as</p>
+<p><span class="math display">\[Y=AX+E\]</span>.</p>
+<p>Hence the matrices coming out of the code must be transposed,
+i.e. <span class="math inline">\(A^{&#39;}=B\)</span>.</p>
+<p>APR, following Waggoner and Zha (1999) suggest this formula</p>
+<p><span class="math display">\[
+N_{h}^\ell=\sum_{j=1}^{h-1}N_{h-j}^\ell B_{j}+B_{h+\ell-1}
+\]</span></p>
+<p>with</p>
+<p><span class="math display">\[
+N_1^\ell=B_\ell
+\]</span></p>
+<p>So for example for <span class="math inline">\(\ell=1\)</span> and
+<span class="math inline">\(h=2\)</span></p>
+<p><span class="math display">\[
+N_2^1=B_1B_1+B_2
+\]</span></p>
+<p>and <span class="math inline">\(\ell=2\)</span></p>
+<p><span class="math display">\[
+N_2^2 = B_2B_1+B_3
+\]</span></p>
+<p>where <span class="math inline">\(B_{j&gt;\text{number of
+lags}}=0\)</span> .</p>
+<p>For <span class="math inline">\(h=3\)</span></p>
+<p><span class="math display">\[
+N_3^1=N_2^1B_1+N_1^1B_2=B_1B_1B_1+B_2B_1+B_1B_2+\left(B_{3}=0\right)
+\]</span> etc.</p>
+<p>Simulation of the future shocks gives all possible future
+realizations which can be used to generate credible sets for <span class="math inline">\(y_{t+h}\)</span>.</p>
+<p>Total uncertainty is given by the future shocks and the uncertainty
+related to the estimated parameters. We can use the posterior
+distribution of the estimates to characterize this uncertainty.</p>
+<div id="conditional-forecast" class="section level3">
+<h3>Conditional Forecast</h3>
+<p>Imagine have a vector of future data for all variables <span class="math inline">\(\tilde f_{T+1,T+h}\)</span> , then the only way
+that this can be supported by the model is that there will be a set of
+future shocks <span class="math inline">\(\tilde
+\varepsilon_{T+1,T+h}\)</span> that brings about the data. The same can
+be said for a subset of variables eg selected via the selection matrix
+<span class="math inline">\(C\)</span> , eg for h=1 (for h&gt;1 would
+have a 1 every <span class="math inline">\(n_v*(j-1)+1\)</span> in the
+first row and <span class="math inline">\(n_v*(j-1)\)</span> columns in
+the second row where <span class="math inline">\(j=\{1...h\}\)</span></p>
+<p><span class="math display">\[
+C=\left.\underbrace{\left[\begin{matrix}
+1&amp;0&amp;\ldots&amp;0\\
+0&amp;0&amp;\ldots&amp;1
+\end{matrix}\right]}_{h\cdot n_v}\right\}k
+\]</span></p>
+<p>selecting the first and last variables.</p>
+<p>Thus</p>
+<p><span class="math display">\[
+f_{T+1,T+h}=Cb_{T+1,T+h}+CM^{\prime}\tilde \varepsilon_{T+1,T+h}
+\]</span></p>
+<p>This set of shocks can be obtained as (see Waggoner and Zha 1999 who
+allow for set restrictions)</p>
+<p><span class="math display">\[
+\tilde
+\varepsilon_{T+1,T+h}=D^{\ast}\left(f_{T+1,T+h}-Cb_{T+1,T+h}\right)
+\]</span></p>
+<p>where <span class="math inline">\(D=CM^{\prime}\)</span> ,</p>
+<p><span class="math display">\[
+M=\left[\begin{matrix}
+M_0&amp;M_1&amp;\ldots&amp;M_{h-1}\\
+0&amp;M_0&amp;\ldots&amp; M_{h-2}\\
+\vdots &amp;\vdots&amp;\ddots&amp;\vdots\\
+0&amp;\ldots&amp;\ldots&amp;M_0
+\end{matrix}\right]
+\]</span></p>
+<p>and <span class="math inline">\(D^{\ast}\)</span> is a suitable
+pseudo-inverse. APR suggest to use the Penrose inverse.</p>
+<p>The non-conditioning variables are extracted as <span class="math inline">\(C_{\perp} y_{T+1,T+h}\)</span> then <span class="math inline">\(P\left[\begin{matrix}C\\C_{\perp}\end{matrix}\right]=I\)</span>
+where <span class="math inline">\(P\)</span> sorts the variables in the
+original order.</p>
+<p>Note that according to this notation, the unconditional distribution
+of the forecasts is</p>
+<p><span class="math display">\[
+y_{T+1,T+h} \sim \mathcal{N}\left(b_{T+1,T+h},M^{\prime} M \right)
+\]</span></p>
+<p>which is independent of the orthogonal matrix <span class="math inline">\(Q\)</span>.</p>
+<p>Note that <span class="math inline">\(f_{T+1,T+h}\)</span> will have
+a non-degenerate distribution only if we allow for a range of future
+values ( <span class="math inline">\(\text{\`a la}\)</span> Waggoner and
+Zha).</p>
+<p>APR suggest a different approach. Define the mean of the future path
+as <span class="math inline">\(f_{T+1,T+h}\)</span> and its variance as
+<span class="math inline">\(\Omega_f\)</span> (possibly zero in the
+“hard conditional forecast” of Waggoner and Zha). Then we can say
+that</p>
+<p><span class="math display">\[
+C \tilde y_{T+1,T+h}\sim \mathcal{N}\left(f_{T+1,T+h},\Omega_f\right)
+\]</span></p>
+<p>where <span class="math inline">\(\tilde y_{T+1,T+h}\)</span> is the
+conditional forecast outcome for all variables and <span class="math inline">\(C\)</span> thus selects those variables that are
+restricted.</p>
+<p>Then from the VMA representation it must be that</p>
+<p><span class="math display">\[
+C \tilde y_{T+1,T+h}=Cb_{T+1,T+h}+D \tilde \varepsilon_{T+1,T+h}\sim
+\mathcal{N}\left(f_{T+1,T+h},\Omega_f\right)
+\]</span></p>
+<p>In turn the future shocks’ distribution can be written as</p>
+<p><span class="math display">\[
+\tilde \varepsilon_{T+1,T+h}\sim
+\mathcal{N}\left(\mu_\varepsilon,\Sigma_\varepsilon\right)
+\]</span>where the two moments need to be determined. Following APR
+define <span class="math inline">\(\Sigma_\varepsilon=I+\Psi_\varepsilon\)</span> so
+that <span class="math inline">\(\Psi_\varepsilon\)</span> can be
+interpreted as the deviation of the covariance matrix from that of the
+unconditional innovations. Analogously, <span class="math inline">\(\mu_\varepsilon\)</span> is the deviation from the
+unconditional mean (zero). Finally we get two restrictions that allow us
+to derive the moments of the conditional innovations</p>
+<p><span class="math display">\[
+\begin{aligned}
+Cb_{T+1,T+h}+D\mu_\varepsilon =f_{T+1,T+h}\,\,\,\text{Mean}\\
+D\left(I+\Psi_\varepsilon\right)D^\prime = \Omega_f\,\,\,
+\text{Variance}
+\end{aligned}
+\]</span> The number of solutions depends on the relative number of
+restrictions (k) and points $(h\cdot n_v)$. Here is where the Penrose
+inverse is used.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mu_\varepsilon = D^\ast\left(f_{T+1,T+h}-Cb_{T+1,T+h}\right)\\
+\Sigma_\varepsilon = D^\ast \Omega_f D^{\ast\prime}+\left(I-D^\ast D
+D^\prime D^{\ast\prime}\right)
+\end{aligned}
+\]</span></p>
+<p>Note that the formula for the mean is the same as the formula for the
+shocks necessary to bring about the desired path in the “hard” forecast.
+Here it is expressed as mean of a distribution for the particular case
+in which we seek a set-conditional-forecast.</p>
+<p>Note that the choice of <span class="math inline">\(Q\)</span>
+affects the distribution of the conditional forecast innovations. The
+Penrose inverse (or actually the LS inverse) would minimize the <span class="math inline">\(\mu_\varepsilon\)</span> and <span class="math inline">\(\Psi_\varepsilon\)</span> (Frobenious norm of
+them) and thus this solution <strong>minimizes the distance of the
+conditional from unconditional innovations</strong>. So while <span class="math inline">\(k&lt;h \cdot n_v\)</span> implies multiple
+solutions, we pick here a particular one.</p>
+<p>From</p>
+<p><span class="math display">\[
+\tilde y_{T+1,T+h}=b_{T+1,T+h}+M^{\prime}\tilde \varepsilon_{T+1,T+h}
+\]</span></p>
+<p>we can define the mean of <span class="math inline">\(E \tilde
+y_{T+1,T+h}=\mu_y\)</span> , and the variance <span class="math inline">\(E
+\left(y_{T+1,T+h}-\mu_y\right)\left(y_{T+1,T+h}-\mu_y\right)^\prime =
+\Sigma_y\)</span> as</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mu_y=b_{T+1,T+h}+M&#39;D^\ast\left(f_{T+1,T+h}-C b_{T+1,T+h}\right)\\
+\Sigma_y=M^\prime M+M^\prime
+D^\ast\left(\Omega_f-DD^\prime\right)D^{\ast\prime}M
+\end{aligned}
+\]</span> <strong>A particular interesting assumption</strong> is <span class="math inline">\(\Omega_f=DD^\prime\)</span> (see equation for
+conditional) which implies that <span class="math inline">\(\Sigma_y=M^\prime M\)</span>, i.e. the
+unconditional forecast variance. This means, in other words, that the
+variance of the outcome variable is independent of the scenario.
+<strong>Importantly</strong>, this does not mean that the dispersion of
+the conditional forecast would be invariant, since there is estimation
+uncertainty, and the mean of the distribution depends on how the
+“scenario” is translated by each posterior draw.</p>
+<p>APR provide arguments to use the Kullback-Leibler (entropy) measure
+of distance between conditional and unconditional forecasts to assess
+the plausibility of the former (the above solutions are solutions to the
+relative entropy problem when <span class="math inline">\(\Omega_f=DD^\prime\)</span>)</p>
+<p>All the above can immediately be applied to a
+<strong>conditional-on-observables</strong> forecasting.</p>
+<p>By analogy, one could impose restrictions directly on (some of) the
+innovations. Defining the selection matrix as <span class="math inline">\(\Xi\)</span> , one could impose that</p>
+<p><span class="math display">\[\begin{equation}
+\Xi \tilde \varepsilon_{T+1,T+h}\sim
+\mathcal{N}\left(g_{T+1,T+h},\Omega_g\right)\label{eq-condforc}
+\end{equation}\]</span></p>
+<p>Then defining <span class="math inline">\(\underline{C}=\Xi
+M^{\prime\,-1}\)</span> , is must be that</p>
+<p><span class="math display">\[
+\underline{C}\tilde y_{T+1,T+h}\sim
+\mathcal{N}\left(\underline{f}_{T+1,T+h},\underline{\Omega_f}\right)
+\]</span></p>
+<p>where <span class="math inline">\(\underline{f}{\ldots}=\underline{C}b_{\ldots}+g_{\ldots}\)</span>
+and <span class="math inline">\(\underline{\Omega}f=\Omega_g\)</span>.
+Hence the same formulas derived above apply to
+<strong>conditional-on-shocks</strong> forecasts</p>
+</div>
+<div id="scenario-analysis-1" class="section level3">
+<h3>Scenario analysis</h3>
+<p>The scenario analysis constrains only a subset of structural shocks
+to account for the assumed path of some observables. The other shocks
+are assumed to follow their unconditional distribution.</p>
+<p>As above we define a selection matrix <span class="math inline">\(\bar C\)</span> that restricts some of the
+observables. The matrix <span class="math inline">\(\Xi\)</span> on the
+contrary imposes that a subset of shocks follows the unconditional
+distribution.</p>
+<p>Combining the two in essence allows only a subset of shocks to drive
+the conditional forecast.</p>
+<p>Note that imposing that some shocks follow their unconditional
+distribution means that</p>
+<p><span class="math display">\[
+\Xi \tilde \varepsilon_{T+1,T+h}\sim \mathcal{N}\left(0,I\right)
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+\tilde \varepsilon_{T+1,T+h}=M^{\prime \,-1} \left(b_{T+1,T+h}-\tilde
+y_{T+1,T+h}\right)
+\]</span></p>
+<p>so</p>
+<p><span class="math display">\[
+\Xi \tilde \varepsilon_{T+1,T+h}=\Xi M^{\prime \,-1}
+\left(b_{T+1,T+h}-\tilde y_{T+1,T+h}\right)
+\]</span></p>
+<p>Note that <span class="math inline">\(\Xi\)</span> selects the “free”
+(non-driving) shocks.</p>
+<p>Can now define</p>
+<p><span class="math display">\[
+\underline{C}=\Xi M^{\prime\,-1}
+\]</span></p>
+<p>Bringing both restrictions together get</p>
+<p><span class="math display">\[
+\widehat C \tilde y_{T+1,T+h}\sim \mathcal{N}\left(\widehat
+f_{T+1,T+h},\widehat \Omega_f\right)
+\]</span></p>
+<p>Where</p>
+<p><span class="math display">\[
+\widehat C=\left[\begin{matrix} \overline
+C\\\underline{C}\end{matrix}\right]
+\]</span></p>
+<p><span class="math display">\[
+\widehat
+f_{T+1,T+h}=\left[\begin{matrix}f_{T+1,T+h}\\\underline{C}b_{T+1,T+h}\end{matrix}\right]
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\widehat \Omega_f=\left[\begin{matrix}\Omega_f&amp; 0\\0&amp;
+I\end{matrix}\right]
+\]</span></p>
+<p>Then can simply draw from <span class="citation">@eq-condforc</span>
+to generate scenarios. Furthermore can define the whole distribution of
+the scenario, e.g. the tails of it.</p>
+<p>Important to notice that there are restrictions on the existence of a
+solution. If <span class="math inline">\(k&gt;n_v h\)</span> there are
+no solutions: too many restrictions relative to data points.</p>
+</div>
+</div>
+</div>
+<div id="packages" class="section level1">
+<h1>Packages</h1>
+<p>The APRScenario package can be installed from github (see below).
+Furthermore I’ve forked bsvarSIGNs to allow for the parallel sampling of
+the rotation matrix <span class="math inline">\(Q\)</span>. This is a
+contentious issue, and so my forked version allows for alternative
+approaches: i) One Q draw per posterior draw (traditional); ii) Several
+Q draws per posterior, with the latter re-weighted by the number of Q
+draws; iii) Several Q draws per posterior, but only one retained. The
+ii) and iii) option exploit the fact that in multi-core computer the
+cost of multiple draws of Q (as many as cores/threads) has minimal extra
+cost.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Load required packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(APRScenario)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(bsvarSIGNs)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(bsvars)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># Note: During package development, you can reload the package if needed</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">data</span>(NKdata)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>X0<span class="ot">&lt;-</span>NKdata[,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>varbls<span class="ot">&lt;-</span><span class="fu">names</span>(X0)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>p<span class="ot">&lt;-</span><span class="fu">autoplot</span>(X0 <span class="sc">%&gt;%</span> <span class="fu">ts</span>(.,<span class="at">frequency=</span><span class="dv">4</span>,<span class="at">start=</span><span class="fu">round</span>(NKdata<span class="sc">$</span>year[<span class="dv">1</span>])),<span class="at">facets=</span>T)<span class="sc">+</span><span class="fu">ylab</span>(<span class="st">&#39;&#39;</span>)<span class="sc">+</span><span class="fu">xlab</span>(<span class="st">&#39;&#39;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># To save the plot, use:</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co"># ggsave(&#39;data.png&#39;, plot=p, device=&#39;png&#39;, path=tempdir(), width=18, height=16, units = &#39;cm&#39;)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>sr <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> <span class="fu">length</span>(varbls), <span class="at">ncol =</span> <span class="fu">length</span>(varbls))</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># Fill the matrix with sign restrictions as per the previous setup</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>sr <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="co"># GDP</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="dv">1</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>, <span class="co"># infl</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="dv">1</span>,<span class="cn">NA</span>,<span class="dv">1</span> <span class="co"># interest rate</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>), <span class="at">nrow =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># ############# Subset of variables</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co"># 1. Baseline VAR --------</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>subset_<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="co"># start with subsets of variables</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#/////////////////////////////</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>n_draws<span class="ot">=</span><span class="dv">200</span> <span class="co"># increase for final estimation</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>p<span class="ot">=</span><span class="dv">4</span> <span class="co"># lags</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co"># possible subsampling</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>X<span class="ot">=</span>X0[<span class="dv">1</span><span class="sc">:</span>(<span class="fu">nrow</span>(X0)<span class="sc">-</span><span class="dv">4</span>),]</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># specify the model</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>specification  <span class="ot">=</span> bsvarSIGNs<span class="sc">::</span>specify_bsvarSIGN<span class="sc">$</span><span class="fu">new</span>(<span class="at">data=</span><span class="fu">as.matrix</span>(X,<span class="dv">3</span>,<span class="dv">3</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>                                      <span class="at">p        =</span> p,</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>                                       <span class="at">sign_irf =</span> sr[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co"># estimate the model</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>posterior      <span class="ot">=</span> <span class="fu">estimate</span>(specification, <span class="at">S =</span> n_draws) <span class="co"># SEE FORKED VERSION FOR PARALLEL Q ROTATION DRAWS</span></span></code></pre></div>
+<pre><code>## **************************************************|
+##  bsvarSIGNs: Bayesian Structural VAR with sign,   |
+##              zero and narrative restrictions      |
+## **************************************************|
+##  Progress of simulation for 200 independent draws
+##  Press Esc to interrupt the computations
+## **************************************************|</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># compute and plot impulse responses</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>irf            <span class="ot">=</span> bsvars<span class="sc">::</span><span class="fu">compute_impulse_responses</span>(posterior, <span class="at">horizon =</span> <span class="dv">40</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co"># {</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#   X11()</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co"># plot(irf, probability = 0.68)</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>{</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  p<span class="ot">&lt;-</span><span class="fu">plot_bvars</span>(irf, <span class="at">significance_level =</span> <span class="fl">0.32</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>                <span class="at">central_tendency =</span> <span class="st">&#39;median&#39;</span>, <span class="at">variable_names =</span> varbls, <span class="at">shock_names =</span> varbls)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  {<span class="fu">dev.new</span>()</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  grid<span class="sc">::</span><span class="fu">grid.newpage</span>()  </span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>  grid_arranged_plots <span class="ot">&lt;-</span> <span class="fu">arrangeGrob</span>(<span class="at">grobs =</span> p[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>], <span class="at">nrow =</span><span class="dv">3</span>, <span class="at">ncol =</span><span class="dv">3</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="fu">grid.arrange</span>(<span class="at">grobs =</span> p[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>], <span class="at">nrow =</span><span class="dv">3</span>, <span class="at">ncol =</span><span class="dv">3</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  }</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>  }</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co"># To save the IRF plots:</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co"># ggsave(&#39;irf_bvars.png&#39;, plot=grid_arranged_plots, device=&#39;png&#39;, path=tempdir(), width=18, height=16, units = &#39;cm&#39;)</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>sr1<span class="ot">&lt;-</span>sr <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="fu">rownames</span>(sr1)<span class="ot">&lt;-</span>varbls </span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a><span class="fu">names</span>(sr1)<span class="ot">&lt;-</span>varbls</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a><span class="co"># To display the sign restrictions table:</span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co"># knitr::kable(sr1, row.names = TRUE, caption = &#39;Sign Restrictions: IRF 1 (shocks in col.)&#39;)</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a><span class="co"># sr1 %&gt;% cat(file=&#39;figures/sr_bvars.tex&#39;)</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a>f_bvar<span class="ot">&lt;-</span>bsvars<span class="sc">::</span><span class="fu">forecast</span>(</span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a>  posterior,</span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a>  <span class="at">horizon =</span> <span class="dv">3</span>,</span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a>  <span class="at">exogenous_forecast =</span> <span class="cn">NULL</span>,</span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>  <span class="at">conditional_forecast =</span> <span class="cn">NULL</span></span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>)</span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a><span class="co"># VAR structure Y&#39;=X&#39;*B+u&#39; (see specification$data_matrices) </span></span></code></pre></div>
+<div id="getting-all-the-necessary-matrices" class="section level2">
+<h2>Getting all the necessary matrices</h2>
+<p>bsvarSIGNs generate a set of matrices that are needed for the
+computation of the scenarios. The function
+gen_mats(posterior,specification) generate the necessary matrices for
+the scenarios.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Actual function ---------------</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>matrices<span class="ot">&lt;-</span><span class="fu">gen_mats</span>(posterior, specification);</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># Unpack the matrices from the returned list</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>M <span class="ot">&lt;-</span> matrices<span class="sc">$</span>M</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>M_inv <span class="ot">&lt;-</span> matrices<span class="sc">$</span>M_inv</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>M_list <span class="ot">&lt;-</span> matrices<span class="sc">$</span>M_list</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>B <span class="ot">&lt;-</span> matrices<span class="sc">$</span>B</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>B_list <span class="ot">&lt;-</span> matrices<span class="sc">$</span>B_list</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>intercept <span class="ot">&lt;-</span> matrices<span class="sc">$</span>intercept</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>n_var <span class="ot">&lt;-</span> matrices<span class="sc">$</span>n_var</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>n_p <span class="ot">&lt;-</span> matrices<span class="sc">$</span>n_p</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>Y <span class="ot">&lt;-</span> matrices<span class="sc">$</span>Y</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>XX <span class="ot">&lt;-</span> matrices<span class="sc">$</span>X</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>Z <span class="ot">&lt;-</span> matrices<span class="sc">$</span>Z</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>{<span class="co"># run all block </span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>h<span class="ot">=</span><span class="dv">4</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>y_h_all<span class="ot">&lt;-</span><span class="fu">forc_h</span>(h,<span class="at">n_sim=</span><span class="dv">200</span>,<span class="at">data_=</span>Z,<span class="at">posterior=</span>posterior,<span class="at">matrices=</span>matrices)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>y_h<span class="ot">&lt;-</span>y_h_all[[<span class="dv">1</span>]]</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>hist_h<span class="ot">&lt;-</span>y_h_all[[<span class="dv">3</span>]]</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>b_h<span class="ot">&lt;-</span>y_h_all[[<span class="dv">4</span>]]</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>{<span class="co"># extract quantiles</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>y_h_m<span class="ot">&lt;-</span><span class="fu">apply</span>(y_h,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">FUN=</span><span class="cf">function</span>(x)<span class="fu">quantile</span>(x,<span class="fl">0.5</span>))</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>y_h_l<span class="ot">&lt;-</span><span class="fu">apply</span>(y_h,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">FUN=</span><span class="cf">function</span>(x)<span class="fu">quantile</span>(x,<span class="fl">0.16</span>))</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>y_h_u<span class="ot">&lt;-</span><span class="fu">apply</span>(y_h,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">FUN=</span><span class="cf">function</span>(x)<span class="fu">quantile</span>(x,<span class="fl">0.84</span>))</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>hist_h_l<span class="ot">&lt;-</span><span class="fu">apply</span>(hist_h,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">FUN=</span><span class="cf">function</span>(x)<span class="fu">quantile</span>(x,<span class="fl">0.16</span>))</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>hist_h_u<span class="ot">&lt;-</span><span class="fu">apply</span>(hist_h,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">FUN=</span><span class="cf">function</span>(x)<span class="fu">quantile</span>(x,<span class="fl">0.84</span>))</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>}</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co"># convert to data frame for better manipulation</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>{</span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>y_h_m<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">t</span>(y_h_m))</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>y_h_u<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">t</span>(y_h_u))</span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>y_h_l<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">t</span>(y_h_l))</span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>hist_h_u<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">t</span>(hist_h_u))</span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>hist_h_l<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">t</span>(hist_h_l))</span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a><span class="fu">names</span>(y_h_m)<span class="ot">&lt;-</span>varbls</span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a>y_h_m<span class="sc">$</span>h<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y_h_m)</span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a>y_h_tot<span class="ot">&lt;-</span><span class="fu">pivot_longer</span>(y_h_m,<span class="at">cols=</span><span class="fu">all_of</span>(varbls),<span class="at">names_to=</span><span class="st">&#39;vars&#39;</span>,<span class="at">values_to=</span><span class="st">&#39;Median&#39;</span>)</span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a><span class="fu">names</span>(y_h_l)<span class="ot">&lt;-</span>varbls</span>
+<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a>y_h_l<span class="sc">$</span>h<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y_h_l)</span>
+<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a>y_h_tot<span class="ot">&lt;-</span><span class="fu">left_join</span>(y_h_tot,</span>
+<span id="cb8-33"><a href="#cb8-33" tabindex="-1"></a>                   <span class="fu">pivot_longer</span>(y_h_l,<span class="at">cols=</span><span class="fu">all_of</span>(varbls),<span class="at">names_to=</span><span class="st">&#39;vars&#39;</span>,<span class="at">values_to=</span><span class="st">&#39;LB&#39;</span>),</span>
+<span id="cb8-34"><a href="#cb8-34" tabindex="-1"></a>                   <span class="at">by=</span><span class="fu">c</span>(<span class="st">&#39;h&#39;</span>,<span class="st">&#39;vars&#39;</span>))</span>
+<span id="cb8-35"><a href="#cb8-35" tabindex="-1"></a></span>
+<span id="cb8-36"><a href="#cb8-36" tabindex="-1"></a><span class="fu">names</span>(y_h_u)<span class="ot">&lt;-</span>varbls</span>
+<span id="cb8-37"><a href="#cb8-37" tabindex="-1"></a>y_h_u<span class="sc">$</span>h<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y_h_u)</span>
+<span id="cb8-38"><a href="#cb8-38" tabindex="-1"></a>y_h_tot<span class="ot">&lt;-</span><span class="fu">left_join</span>(y_h_tot,</span>
+<span id="cb8-39"><a href="#cb8-39" tabindex="-1"></a>                   <span class="fu">pivot_longer</span>(y_h_u,<span class="at">cols=</span><span class="fu">all_of</span>(varbls),<span class="at">names_to=</span><span class="st">&#39;vars&#39;</span>,<span class="at">values_to=</span><span class="st">&#39;UB&#39;</span>),</span>
+<span id="cb8-40"><a href="#cb8-40" tabindex="-1"></a><span class="at">by=</span><span class="fu">c</span>(<span class="st">&#39;h&#39;</span>,<span class="st">&#39;vars&#39;</span>))</span>
+<span id="cb8-41"><a href="#cb8-41" tabindex="-1"></a></span>
+<span id="cb8-42"><a href="#cb8-42" tabindex="-1"></a><span class="fu">names</span>(hist_h_l)<span class="ot">&lt;-</span>varbls</span>
+<span id="cb8-43"><a href="#cb8-43" tabindex="-1"></a>hist_h_l<span class="sc">$</span>h<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(hist_h_l)</span>
+<span id="cb8-44"><a href="#cb8-44" tabindex="-1"></a>hist_h_tot<span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(hist_h_l,<span class="at">cols=</span><span class="fu">all_of</span>(varbls),<span class="at">names_to=</span><span class="st">&#39;vars&#39;</span>,<span class="at">values_to=</span><span class="st">&#39;LB_s&#39;</span>)</span>
+<span id="cb8-45"><a href="#cb8-45" tabindex="-1"></a></span>
+<span id="cb8-46"><a href="#cb8-46" tabindex="-1"></a><span class="fu">names</span>(hist_h_u)<span class="ot">&lt;-</span>varbls</span>
+<span id="cb8-47"><a href="#cb8-47" tabindex="-1"></a>hist_h_u<span class="sc">$</span>h<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(hist_h_u)</span>
+<span id="cb8-48"><a href="#cb8-48" tabindex="-1"></a>hist_h_tot<span class="ot">&lt;-</span><span class="fu">left_join</span>(hist_h_tot,</span>
+<span id="cb8-49"><a href="#cb8-49" tabindex="-1"></a>                   <span class="fu">pivot_longer</span>(hist_h_u,<span class="at">cols=</span><span class="fu">all_of</span>(varbls),<span class="at">names_to=</span><span class="st">&#39;vars&#39;</span>,<span class="at">values_to=</span><span class="st">&#39;UB_s&#39;</span>),</span>
+<span id="cb8-50"><a href="#cb8-50" tabindex="-1"></a><span class="at">by=</span><span class="fu">c</span>(<span class="st">&#39;h&#39;</span>,<span class="st">&#39;vars&#39;</span>))</span>
+<span id="cb8-51"><a href="#cb8-51" tabindex="-1"></a></span>
+<span id="cb8-52"><a href="#cb8-52" tabindex="-1"></a></span>
+<span id="cb8-53"><a href="#cb8-53" tabindex="-1"></a>y_h_tot<span class="ot">&lt;-</span><span class="fu">left_join</span>(y_h_tot,hist_h_tot,<span class="at">by=</span><span class="fu">c</span>(<span class="st">&#39;h&#39;</span>,<span class="st">&#39;vars&#39;</span>))</span>
+<span id="cb8-54"><a href="#cb8-54" tabindex="-1"></a></span>
+<span id="cb8-55"><a href="#cb8-55" tabindex="-1"></a>}</span>
+<span id="cb8-56"><a href="#cb8-56" tabindex="-1"></a><span class="co"># inspect result</span></span>
+<span id="cb8-57"><a href="#cb8-57" tabindex="-1"></a>dt_t<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">t</span>(Y))</span>
+<span id="cb8-58"><a href="#cb8-58" tabindex="-1"></a>dt_t<span class="sc">$</span>h<span class="ot">=</span><span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(dt_t)</span>
+<span id="cb8-59"><a href="#cb8-59" tabindex="-1"></a>y_data<span class="ot">&lt;-</span><span class="fu">pivot_longer</span>(dt_t,<span class="at">cols =</span><span class="fu">all_of</span>(<span class="dv">1</span><span class="sc">:</span>n_var),<span class="at">values_to =</span><span class="fu">names</span>(y_h_tot)[<span class="dv">3</span>],<span class="at">names_to =</span> <span class="st">&quot;vars&quot;</span> )</span>
+<span id="cb8-60"><a href="#cb8-60" tabindex="-1"></a>y_data<span class="ot">&lt;-</span>y_data[y_data<span class="sc">$</span>h<span class="sc">&gt;=</span><span class="fu">last</span>(y_data<span class="sc">$</span>h)<span class="sc">-</span><span class="dv">4</span>,]  </span>
+<span id="cb8-61"><a href="#cb8-61" tabindex="-1"></a>  </span>
+<span id="cb8-62"><a href="#cb8-62" tabindex="-1"></a>y_data<span class="sc">$</span>h<span class="ot">&lt;-</span>y_data<span class="sc">$</span>h<span class="sc">-</span><span class="fu">max</span>(y_data<span class="sc">$</span>h)</span>
+<span id="cb8-63"><a href="#cb8-63" tabindex="-1"></a>y_data<span class="sc">$</span>LB<span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb8-64"><a href="#cb8-64" tabindex="-1"></a>y_data<span class="sc">$</span>UB<span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb8-65"><a href="#cb8-65" tabindex="-1"></a>y_data<span class="sc">$</span>LB_s<span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb8-66"><a href="#cb8-66" tabindex="-1"></a>y_data<span class="sc">$</span>UB_s<span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb8-67"><a href="#cb8-67" tabindex="-1"></a></span>
+<span id="cb8-68"><a href="#cb8-68" tabindex="-1"></a>y_h_tot<span class="ot">&lt;-</span><span class="fu">rbind</span>(y_data,y_h_tot)</span>
+<span id="cb8-69"><a href="#cb8-69" tabindex="-1"></a>y_h_tot<span class="ot">&lt;-</span>y_h_tot[<span class="fu">order</span>(y_h_tot<span class="sc">$</span>h),]</span>
+<span id="cb8-70"><a href="#cb8-70" tabindex="-1"></a><span class="fu">head</span>(y_h_tot)</span>
+<span id="cb8-71"><a href="#cb8-71" tabindex="-1"></a></span>
+<span id="cb8-72"><a href="#cb8-72" tabindex="-1"></a>uncond.forc<span class="ot">&lt;-</span>y_h_tot</span>
+<span id="cb8-73"><a href="#cb8-73" tabindex="-1"></a><span class="co"># plot </span></span>
+<span id="cb8-74"><a href="#cb8-74" tabindex="-1"></a></span>
+<span id="cb8-75"><a href="#cb8-75" tabindex="-1"></a></span>
+<span id="cb8-76"><a href="#cb8-76" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(uncond.forc[uncond.forc<span class="sc">$</span>vars <span class="sc">==</span> varbls[<span class="dv">1</span>], ], <span class="fu">aes</span>(<span class="at">x =</span> h)) <span class="sc">+</span></span>
+<span id="cb8-77"><a href="#cb8-77" tabindex="-1"></a>  <span class="co"># Median line (solid line)</span></span>
+<span id="cb8-78"><a href="#cb8-78" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> Median, <span class="at">color =</span> <span class="st">&quot;med&quot;</span>), <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">show.legend =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb8-79"><a href="#cb8-79" tabindex="-1"></a>  </span>
+<span id="cb8-80"><a href="#cb8-80" tabindex="-1"></a>  <span class="co"># Shaded area for 68% HDI</span></span>
+<span id="cb8-81"><a href="#cb8-81" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> LB, <span class="at">ymax =</span> UB, <span class="at">fill =</span> <span class="st">&quot;bnd&quot;</span>), </span>
+<span id="cb8-82"><a href="#cb8-82" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">show.legend =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb8-83"><a href="#cb8-83" tabindex="-1"></a>  </span>
+<span id="cb8-84"><a href="#cb8-84" tabindex="-1"></a>  <span class="co"># Dashed lines for 68% high credibility band of history</span></span>
+<span id="cb8-85"><a href="#cb8-85" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> LB_s, <span class="at">color =</span> <span class="st">&quot;hist&quot;</span>), </span>
+<span id="cb8-86"><a href="#cb8-86" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>, <span class="at">show.legend =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb8-87"><a href="#cb8-87" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> UB_s, <span class="at">color =</span> <span class="st">&quot;hist&quot;</span>), </span>
+<span id="cb8-88"><a href="#cb8-88" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb8-89"><a href="#cb8-89" tabindex="-1"></a>  </span>
+<span id="cb8-90"><a href="#cb8-90" tabindex="-1"></a>  <span class="co"># Labels and theme</span></span>
+<span id="cb8-91"><a href="#cb8-91" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Unconditional Forecast&quot;</span>, <span class="at">x =</span> <span class="st">&quot;h&quot;</span>, <span class="at">y =</span> varbls[<span class="dv">1</span>]) <span class="sc">+</span></span>
+<span id="cb8-92"><a href="#cb8-92" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb8-93"><a href="#cb8-93" tabindex="-1"></a>  </span>
+<span id="cb8-94"><a href="#cb8-94" tabindex="-1"></a>  <span class="co"># Custom legend for colors</span></span>
+<span id="cb8-95"><a href="#cb8-95" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb8-96"><a href="#cb8-96" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;Legend&quot;</span>,</span>
+<span id="cb8-97"><a href="#cb8-97" tabindex="-1"></a>    <span class="at">labels=</span><span class="fu">c</span>(<span class="st">&#39;med&#39;</span><span class="ot">=</span><span class="st">&quot;Median&quot;</span>,<span class="st">&#39;hist&#39;</span><span class="ot">=</span><span class="st">&quot;no shock unc.&quot;</span>),</span>
+<span id="cb8-98"><a href="#cb8-98" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;med&quot;</span> <span class="ot">=</span> <span class="st">&quot;blue&quot;</span>,  <span class="st">&#39;hist&#39;</span><span class="ot">=</span> <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb8-99"><a href="#cb8-99" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-100"><a href="#cb8-100" tabindex="-1"></a>  </span>
+<span id="cb8-101"><a href="#cb8-101" tabindex="-1"></a>  <span class="co"># # Custom legend for fill</span></span>
+<span id="cb8-102"><a href="#cb8-102" tabindex="-1"></a>  <span class="co"># scale_fill_manual(</span></span>
+<span id="cb8-103"><a href="#cb8-103" tabindex="-1"></a>  <span class="co">#   name = &quot;Legend&quot;,</span></span>
+<span id="cb8-104"><a href="#cb8-104" tabindex="-1"></a>  <span class="co">#   labels=c(&#39;bnd&#39;=&quot;no shock unc.&quot;),</span></span>
+<span id="cb8-105"><a href="#cb8-105" tabindex="-1"></a>  <span class="co">#   values = c(&#39;bnd&#39; = &quot;lightblue&quot;)</span></span>
+<span id="cb8-106"><a href="#cb8-106" tabindex="-1"></a>  <span class="co"># )+</span></span>
+<span id="cb8-107"><a href="#cb8-107" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&#39;bottom&#39;</span>)<span class="sc">+</span></span>
+<span id="cb8-108"><a href="#cb8-108" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb8-109"><a href="#cb8-109" tabindex="-1"></a></span>
+<span id="cb8-110"><a href="#cb8-110" tabindex="-1"></a></span>
+<span id="cb8-111"><a href="#cb8-111" tabindex="-1"></a>} <span class="co"># end run all block</span></span>
+<span id="cb8-112"><a href="#cb8-112" tabindex="-1"></a>p</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># To save the unconditional forecast plot:</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co"># ggsave(&#39;uncond_forc.png&#39;, plot=p, device=&#39;png&#39;, path=tempdir(), width=18, height=16, units = &#39;cm&#39;)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co">#NB: Y contans the data n_var x T</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>h<span class="ot">=</span><span class="dv">4</span> <span class="co"># horizon</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>n_sim<span class="ot">=</span><span class="dv">200</span> <span class="co"># number of shock draws</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>obs<span class="ot">=</span><span class="fu">c</span>(<span class="dv">2</span>) <span class="co">#position of observables</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>pos_cond_vars<span class="ot">=</span>obs </span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co"># given the path of the observables</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>TT<span class="ot">=</span><span class="fu">nrow</span>(X0)</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>path<span class="ot">=</span>X0[(TT<span class="sc">-</span>h<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>TT,obs]</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co"># used for bult in conditional forecast</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>bvarSign_path<span class="ot">=</span>X0[(TT<span class="sc">-</span>h<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>TT,]</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>bvarSign_path[,<span class="sc">-</span>obs]<span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co"># give the shocks that are not driving the scenario: NA if all driving</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>shocks<span class="ot">=</span>NA<span class="co">#c(1,2,3)</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>tmp<span class="ot">&lt;-</span><span class="fu">scenarios</span>(<span class="at">h =</span> h,</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>               <span class="at">path =</span> path,<span class="at">obs =</span> obs,</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>               <span class="at">free_shocks =</span> shocks,</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>               <span class="at">n_sample =</span> <span class="cn">NULL</span>,</span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>               <span class="at">data_ =</span> Z,<span class="at">g=</span><span class="cn">NULL</span>,<span class="at">Sigma_g=</span><span class="cn">NULL</span>,</span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>               <span class="at">posterior=</span>posterior,<span class="at">matrices=</span>matrices)</span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>mu_eps<span class="ot">&lt;-</span>tmp[[<span class="dv">1</span>]]</span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>Sigma_eps<span class="ot">&lt;-</span>tmp[[<span class="dv">2</span>]]</span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>mu_y<span class="ot">&lt;-</span>tmp[[<span class="dv">3</span>]]</span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>Sigma_y<span class="ot">&lt;-</span>tmp[[<span class="dv">4</span>]]</span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>big_b<span class="ot">&lt;-</span>tmp[[<span class="dv">5</span>]]</span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a>big_M<span class="ot">&lt;-</span>tmp[[<span class="dv">6</span>]]</span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>y_h<span class="ot">&lt;-</span><span class="fu">simulate_conditional_forecasts</span>(<span class="at">mu_y=</span>mu_y, <span class="at">Sigma_y=</span>Sigma_y, <span class="at">varnames =</span> varbls, <span class="at">n_sim =</span> n_sim)</span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a>  </span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a><span class="co"># convert to data frames of central and HPD</span></span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a>y_h_m<span class="ot">&lt;-</span><span class="fu">apply</span>(y_h,<span class="fu">c</span>(<span class="dv">1</span>),<span class="at">FUN=</span><span class="cf">function</span>(x)<span class="fu">quantile</span>(x,<span class="fl">0.5</span>))</span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a>y_h_l<span class="ot">&lt;-</span><span class="fu">apply</span>(y_h,<span class="fu">c</span>(<span class="dv">1</span>),<span class="at">FUN=</span><span class="cf">function</span>(x)<span class="fu">quantile</span>(x,<span class="fl">0.16</span>))</span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a>y_h_u<span class="ot">&lt;-</span><span class="fu">apply</span>(y_h,<span class="fu">c</span>(<span class="dv">1</span>),<span class="at">FUN=</span><span class="cf">function</span>(x)<span class="fu">quantile</span>(x,<span class="fl">0.84</span>))</span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a>cond.for<span class="ot">&lt;-</span><span class="fu">data.frame</span>(<span class="at">center=</span>y_h_m,<span class="at">variable=</span><span class="fu">rep</span>(varbls,h),<span class="at">hor=</span><span class="fu">sort</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>h,n_var)))</span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a>cond.for<span class="sc">$</span>lower<span class="ot">&lt;-</span>y_h_l</span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a>cond.for<span class="sc">$</span>upper<span class="ot">&lt;-</span>y_h_u</span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a>cond.for<span class="ot">&lt;-</span>cond.for[,<span class="fu">c</span>(<span class="st">&quot;hor&quot;</span>,<span class="st">&quot;variable&quot;</span>,<span class="st">&quot;lower&quot;</span>,<span class="st">&quot;center&quot;</span>,<span class="st">&quot;upper&quot;</span>)]</span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a></span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a></span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a></span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a></span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a><span class="co"># inspect result</span></span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a>dt_t<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">t</span>(Y))</span>
+<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a>dt_t<span class="sc">$</span>h<span class="ot">=</span><span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(dt_t)</span>
+<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a>y_data<span class="ot">&lt;-</span><span class="fu">pivot_longer</span>(dt_t,<span class="at">cols =</span><span class="fu">all_of</span>(<span class="dv">1</span><span class="sc">:</span>n_var),<span class="at">values_to =</span><span class="fu">names</span>(cond.for)[<span class="dv">4</span>],<span class="at">names_to =</span> <span class="st">&quot;variable&quot;</span> )</span>
+<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a>y_data<span class="ot">&lt;-</span>y_data[y_data<span class="sc">$</span>h<span class="sc">&gt;=</span><span class="fu">last</span>(y_data<span class="sc">$</span>h)<span class="sc">-</span><span class="dv">4</span>,]  </span>
+<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a>  </span>
+<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a>y_data<span class="sc">$</span>hor<span class="ot">&lt;-</span>y_data<span class="sc">$</span>h<span class="sc">-</span><span class="fu">max</span>(y_data<span class="sc">$</span>h)</span>
+<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a>y_data<span class="sc">$</span>lower<span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a>y_data<span class="sc">$</span>upper<span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a>y_data<span class="ot">&lt;-</span>y_data[,<span class="fu">names</span>(cond.for)]</span>
+<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a>cond.for<span class="ot">&lt;-</span><span class="fu">rbind</span>(y_data,cond.for)</span>
+<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a>cond.for<span class="ot">&lt;-</span>cond.for[<span class="fu">order</span>(cond.for<span class="sc">$</span>hor),]</span>
+<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a></span>
+<span id="cb10-57"><a href="#cb10-57" tabindex="-1"></a>cond.for<span class="sc">$</span>hist<span class="ot">&lt;-</span><span class="dv">1</span></span>
+<span id="cb10-58"><a href="#cb10-58" tabindex="-1"></a>cond.for[cond.for<span class="sc">$</span>hor<span class="sc">&lt;=</span><span class="dv">0</span>,<span class="st">&#39;hist&#39;</span>]<span class="ot">&lt;-</span><span class="dv">0</span></span>
+<span id="cb10-59"><a href="#cb10-59" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb10-60"><a href="#cb10-60" tabindex="-1"></a></span>
+<span id="cb10-61"><a href="#cb10-61" tabindex="-1"></a>T.start<span class="ot">=</span><span class="st">&#39;2016-01-01&#39;</span></span>
+<span id="cb10-62"><a href="#cb10-62" tabindex="-1"></a>T.end<span class="ot">=</span><span class="fu">as.Date</span>(T.start)<span class="sc">%m+%</span><span class="fu">months</span>(<span class="dv">9</span>)</span>
+<span id="cb10-63"><a href="#cb10-63" tabindex="-1"></a>y_data<span class="ot">&lt;-</span><span class="fu">t</span>(Y) <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span>
+<span id="cb10-64"><a href="#cb10-64" tabindex="-1"></a>dt_tmp<span class="ot">&lt;-</span>zoo<span class="sc">::</span><span class="fu">as.yearqtr</span>(NKdata<span class="sc">$</span>year, <span class="at">format =</span> <span class="st">&quot;%Y Q%q&quot;</span>)</span>
+<span id="cb10-65"><a href="#cb10-65" tabindex="-1"></a>dates_date<span class="ot">&lt;-</span>zoo<span class="sc">::</span><span class="fu">as.Date</span>(dt_tmp)</span>
+<span id="cb10-66"><a href="#cb10-66" tabindex="-1"></a>y_data<span class="sc">$</span>hor<span class="ot">&lt;-</span>dates_date[(<span class="dv">2</span><span class="sc">*</span>specification<span class="sc">$</span>p<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">length</span>(dates_date)]</span>
+<span id="cb10-67"><a href="#cb10-67" tabindex="-1"></a></span>
+<span id="cb10-68"><a href="#cb10-68" tabindex="-1"></a>p<span class="ot">&lt;-</span><span class="fu">plot_cond_forc</span>(<span class="at">y_h_cond =</span>y_h, varbls[<span class="dv">1</span>],<span class="at">T.start =</span> T.start,<span class="at">T.end =</span> T.end,<span class="at">y_data =</span>y_data )</span>
+<span id="cb10-69"><a href="#cb10-69" tabindex="-1"></a>p[[<span class="dv">1</span>]]</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># To save the conditional forecast plot:</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co"># ggsave(&#39;cond_forc.png&#39;, plot=p[[1]], device=&#39;png&#39;, path=tempdir(), width=18, height=16, units = &#39;cm&#39;)</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>threshold<span class="ot">=</span><span class="fu">last</span>(y_data[,<span class="dv">1</span>])<span class="sc">*</span>(<span class="fl">1.01</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>p<span class="ot">&lt;-</span><span class="fu">plot_cond_histo</span>(<span class="at">variable=</span>varbls[<span class="dv">1</span>],<span class="at">horizon=</span><span class="dv">1</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>                   <span class="at">threshold =</span> threshold,<span class="at">data =</span>y_h,<span class="at">above=</span>F,<span class="at">size=</span><span class="dv">5</span>)<span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">title=</span><span class="st">&#39;&#39;</span>)<span class="sc">+</span><span class="fu">theme_minimal</span>()<span class="sc">+</span><span class="fu">ylab</span>(<span class="st">&#39;&#39;</span>)<span class="sc">+</span><span class="fu">xlab</span>(<span class="st">&#39;&#39;</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>p</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># To save the conditional histogram plot:</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co"># ggsave(&#39;cond_histo.png&#39;, plot=p, device=&#39;png&#39;, path=tempdir(), width=18, height=16, units = &#39;cm&#39;)</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>q<span class="ot">&lt;-</span><span class="fu">KL</span>(Sigma_eps,mu_eps,h,<span class="at">plot_ =</span> T)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">hist</span>(q[[<span class="dv">1</span>]],<span class="at">main=</span><span class="st">&#39;KL measure (ref value 0.5)&#39;</span>)</span></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

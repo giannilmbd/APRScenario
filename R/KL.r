@@ -37,10 +37,9 @@
 #' @import dplyr
 #' @importFrom ggplot2 ggplot geom_histogram aes geom_vline xlab ylab labs theme_minimal
 KL<-function(Sigma_eps,mu_eps,h,plot_=FALSE,max_cores=NULL){
-  # Use single core if running in CRAN environment or on Windows
+  # Default to 1 core for Windows compatibility
   if(is.null(max_cores)) {
-    cores <- if(!identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "")) 1 else min(2, parallel::detectCores()-1)
-    if (.Platform$OS.type == "windows") cores <- 1
+    cores <- 1
   } else {
     cores <- max_cores
   }

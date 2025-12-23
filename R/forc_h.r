@@ -5,6 +5,7 @@
 #' @param data_ Optional matrix of data n_var*h+1 x T. If NULL, defaults to matrices$Z
 #' @param posterior Optional posterior object (default taken from calling environment)
 #' @param matrices Optional matrices object from gen_mats() (default taken from calling environment)
+#' @param max_cores maximum number of cores to use for parallel processing (default: 1 for Windows compatibility)
 #' @returns a matrix of unconditional forecasts
 #' @examples
 #' \dontrun{
@@ -15,7 +16,7 @@
 #' @export
 #' @import dplyr
 
-forc_h<-function(h=1,n_sim=200,data_=NULL,posterior=NULL,matrices=NULL){
+forc_h<-function(h=1,n_sim=200,data_=NULL,posterior=NULL,matrices=NULL,max_cores=1){
   # Get matrices from calling environment if not provided
   if(is.null(matrices)) {
     if(exists("matrices", envir=parent.frame())) {
@@ -52,9 +53,8 @@ forc_h<-function(h=1,n_sim=200,data_=NULL,posterior=NULL,matrices=NULL){
 
   hist_h=array(rep(rep(rep(rep(0,n_var),h),n_draws),n_sim),dim=c(n_var,h,n_draws,n_sim))
 
-  # Use single core if running in CRAN environment or on Windows
-  cores <- if(!identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "")) 1 else min(2, parallel::detectCores()-1)
-  if (.Platform$OS.type == "windows") cores <- 1
+  # Default to 1 core for Windows compatibility
+  cores <- max_cores
   
   epsilon<-parallel::mclapply(1:n_draws,function(d)MASS::mvrnorm(n = n_sim, mu = rep(0,n_var), Sigma = diag(1,n_var)),
                               mc.cores = cores) %>% simplify2array()

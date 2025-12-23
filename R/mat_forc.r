@@ -18,6 +18,7 @@
 #'        NB: this is not necessarily the same as the data used to estimate the model
 #'        If run counterfactuals in previoius historical period (ie not forecast) must pass the data up to previous period relative to counterfactual
 #' @param matrices Optional matrices object from gen_mats() (default taken from calling environment)
+#' @param max_cores maximum number of cores to use for parallel processing (default: 1 for Windows compatibility)
 #' @returns the big_b and big_M matrices of mean and IRF
 #' @examples
 #' \donttest{
@@ -36,10 +37,9 @@
 #' @export
 #' @import dplyr
 #'
-mat_forc<-function(h=1,n_draws,n_var,n_p,data_=NULL,matrices=NULL){
-  # Use single core if running in CRAN environment or on Windows
-  cores <- if(!identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "")) 1 else min(2, parallel::detectCores()-1)
-  if (.Platform$OS.type == "windows") cores <- 1
+mat_forc<-function(h=1,n_draws,n_var,n_p,data_=NULL,matrices=NULL,max_cores=1){
+  # Default to 1 core for Windows compatibility
+  cores <- 1
   
   # Get matrices from calling environment if not provided
   if(is.null(matrices)) {

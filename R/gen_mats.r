@@ -4,6 +4,7 @@
 #'
 #' @param posterior Posterior estimation results (eg from BsvarSIGNs)
 #' @param specification Optional specification object (default taken from calling environment)
+#' @param max_cores maximum number of cores to use for parallel processing (default: 1 for Windows compatibility)
 #' @returns Returns all objects necessary for scenario analysis (e.g., IRF matrix),
 #'   including: \code{M}, \code{M_inv}, \code{M_list}, \code{B}, \code{B_list},
 #'   \code{n_p}, \code{n_var}, \code{Y}, \code{X}, and \code{Z}.
@@ -24,7 +25,7 @@
 
 
 
-gen_mats<-function(posterior=NULL, specification=NULL){
+gen_mats<-function(posterior=NULL, specification=NULL, max_cores=1){
   # Get specification from calling environment if not provided
   if(is.null(specification)) {
     if(exists("specification", envir=parent.frame())) {
@@ -42,9 +43,8 @@ gen_mats<-function(posterior=NULL, specification=NULL){
   M_inv<-posterior$posterior$B # This already include Q i.e. B^{-1}=A_0^{-1}%*%Q
   #Q<-posterior$posterior$Q # Rotation matrices
   # remember to transpose
-  # Use single core if running in CRAN environment or on Windows
-  cores <- if(!identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "")) 1 else min(2, parallel::detectCores()-1)
-  if (.Platform$OS.type == "windows") cores <- 1
+  # Default to 1 core for Windows compatibility
+  cores <- max_cores
   
   M_list <- parallel::mclapply(1:dim(M_inv)[3], function(d) solve(t(M_inv[,,d])), mc.cores = cores)
   M <-  abind::abind(M_list, along = 3)

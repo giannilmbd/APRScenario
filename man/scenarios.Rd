@@ -30,7 +30,8 @@ scenarios(
 
 \item{n_sample}{Number of draws to sample (<= n_draws)}
 
-\item{data_}{Optional matrix of data (default taken from matrices$Z)}
+\item{data_}{Optional matrix of data (default taken from matrices$Z). Note: the last observation
+in data_ is used as the starting point; it should not overlap with the scenario forecasting period.}
 
 \item{g}{Optional matrix of non-driving shocks}
 
