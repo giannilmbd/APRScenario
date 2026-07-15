@@ -55,7 +55,7 @@ big_b_and_M<-function(h,n_draws,n_var,n_p,data_=NULL,matrices=NULL,
   mats <- list(B_list = matrices$B_list, M = matrices$M, intercept = matrices$intercept)
 
   per_draw <- apply_over_draws(n_draws = n_draws, n_cores = n_cores, parallel = parallel,
-                               h = h, n_var = n_var, n_p = n_p, data_ = data_, mats = mats)
+                               h = h, n_var = n_var, n_p = n_p, data_ = data_, matrices = mats)
 
   big_b <- abind::abind(
     lapply(per_draw, function(x) array(x$b_h, dim = c(1, n_var * h, 1))),

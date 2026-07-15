@@ -25,8 +25,8 @@ forc_h(
 \item{matrices}{Optional matrices object from gen_mats() (default taken from calling environment)}
 
 \item{max_cores}{number of workers used to parallelize over posterior draws
-(default 1 = serial; forked processes on Unix/macOS, PSOCK cluster on Windows;
-the shock-simulation loop additionally uses forking where available)}
+(default 1 = serial; forked processes on Unix/macOS, PSOCK cluster on
+Windows). Given the same seed, results are identical for any value.}
 }
 \value{
 a matrix of unconditional forecasts

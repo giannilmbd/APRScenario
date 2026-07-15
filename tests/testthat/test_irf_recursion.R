@@ -89,4 +89,14 @@ test_that("big_b_and_M matches bsvars' impulse responses; backends agree", {
                             n_cores = 2, parallel = "fork")
     expect_equal(tmp_fork, tmp, tolerance = 1e-12)
   }
+
+  # forc_h: seed-deterministic and backend-independent (2 workers: CRAN cap;
+  # exercises PSOCK on Windows, fork elsewhere)
+  set.seed(99)
+  fc1 <- forc_h(h = 3, n_sim = 20, data_ = mats$Z, posterior = post,
+                matrices = mats, max_cores = 1)
+  set.seed(99)
+  fc2 <- forc_h(h = 3, n_sim = 20, data_ = mats$Z, posterior = post,
+                matrices = mats, max_cores = 2)
+  expect_equal(fc2, fc1, tolerance = 1e-12)
 })

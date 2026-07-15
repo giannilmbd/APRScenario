@@ -59,7 +59,7 @@ mat_forc<-function(h=1,n_draws,n_var,n_p,data_=NULL,matrices=NULL,max_cores=1){
 
   mats <- list(B_list = matrices$B_list, M = matrices$M, intercept = matrices$intercept)
   per_draw <- apply_over_draws(n_draws = n_draws, n_cores = max_cores, parallel = "auto",
-                               h = h, n_var = n_var, n_p = n_p, data_ = data_, mats = mats)
+                               h = h, n_var = n_var, n_p = n_p, data_ = data_, matrices = mats)
 
   # legacy return shape: b at horizon h only (1 x n_var x n_draws),
   # M_h as a list over horizons of n_var x n_var x n_draws arrays
@@ -158,12 +158,14 @@ mat_forc_draw <- function(h, n_var, n_p, data_, matrices, d) {
 }
 
 
-#' Run mat_forc_draw() over all posterior draws with the requested backend:
+#' Run a self-contained per-draw kernel `fun` (base R only, draw index as first
+#' unmatched formal) over all posterior draws with the requested backend:
 #' "none" (serial), "fork" (parallel::mclapply, Unix/macOS), "psock"
 #' (parallel::parLapply, all platforms incl. Windows), or "auto" (fork where
 #' available, else psock). n_cores = NULL uses physical cores minus one.
+#' Extra arguments in ... are passed to `fun`.
 #' @noRd
-apply_over_draws <- function(n_draws, n_cores, parallel, h, n_var, n_p, data_, mats) {
+apply_over_draws <- function(n_draws, n_cores, parallel, fun = mat_forc_draw, ...) {
   if (is.null(n_cores)) {
     nc <- suppressWarnings(parallel::detectCores(logical = FALSE))
     if (is.na(nc) || nc < 1L) nc <- suppressWarnings(parallel::detectCores())
@@ -184,20 +186,16 @@ apply_over_draws <- function(n_draws, n_cores, parallel, h, n_var, n_p, data_, m
   }
 
   switch(parallel,
-    none = lapply(seq_len(n_draws), mat_forc_draw,
-                  h = h, n_var = n_var, n_p = n_p, data_ = data_, matrices = mats),
-    fork = parallel::mclapply(seq_len(n_draws), mat_forc_draw,
-                              h = h, n_var = n_var, n_p = n_p, data_ = data_, matrices = mats,
-                              mc.cores = n_cores),
+    none = lapply(seq_len(n_draws), fun, ...),
+    fork = parallel::mclapply(seq_len(n_draws), fun, ..., mc.cores = n_cores),
     psock = {
       cl <- parallel::makeCluster(n_cores, type = "PSOCK")
       on.exit(parallel::stopCluster(cl), add = TRUE)
       # self-contained copy of the kernel: workers need neither the package
       # namespace nor clusterExport
-      kernel <- mat_forc_draw
+      kernel <- fun
       environment(kernel) <- globalenv()
-      parallel::parLapply(cl, seq_len(n_draws), kernel,
-                          h = h, n_var = n_var, n_p = n_p, data_ = data_, matrices = mats)
+      parallel::parLapply(cl, seq_len(n_draws), kernel, ...)
     }
   )
 }

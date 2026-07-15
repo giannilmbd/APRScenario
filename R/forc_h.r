@@ -6,8 +6,8 @@
 #' @param posterior Optional posterior object (default taken from calling environment)
 #' @param matrices Optional matrices object from gen_mats() (default taken from calling environment)
 #' @param max_cores number of workers used to parallelize over posterior draws
-#'        (default 1 = serial; forked processes on Unix/macOS, PSOCK cluster on Windows;
-#'        the shock-simulation loop additionally uses forking where available)
+#'        (default 1 = serial; forked processes on Unix/macOS, PSOCK cluster on
+#'        Windows). Given the same seed, results are identical for any value.
 #' @returns a matrix of unconditional forecasts
 #' @examples
 #' \dontrun{
@@ -55,48 +55,47 @@ forc_h<-function(h=1,n_sim=200,data_=NULL,posterior=NULL,matrices=NULL,max_cores
 
   hist_h=array(rep(rep(rep(rep(0,n_var),h),n_draws),n_sim),dim=c(n_var,h,n_draws,n_sim))
 
-  # mclapply forks; on Windows only 1 core is supported
-  cores <- if (.Platform$OS.type == "windows") 1L else max(1L, as.integer(max_cores))
+  # shock draws: serial on purpose (cheap), so results are identical for any
+  # max_cores/backend given the same seed
+  epsilon<-lapply(1:n_draws,function(d)MASS::mvrnorm(n = n_sim, mu = rep(0,n_var), Sigma = diag(1,n_var))) %>% simplify2array()
 
-  epsilon<-parallel::mclapply(1:n_draws,function(d)MASS::mvrnorm(n = n_sim, mu = rep(0,n_var), Sigma = diag(1,n_var)),
-                              mc.cores = cores) %>% simplify2array()
-
-  epsilon<-parallel::mclapply(1:h,function(i)epsilon,mc.cores=cores) %>% simplify2array()  %>%
-    aperm(.,c(2,4,3,1))
+  epsilon<-lapply(1:h,function(i)epsilon) %>% simplify2array()  %>%
+    aperm(.,c(2,4,3,1))   # n_var x h x n_draws x n_sim
 
   # forecast-mean terms and IRFs for all horizons in one pass per draw
   mats <- list(B_list = matrices$B_list, M = matrices$M, intercept = matrices$intercept)
   per_draw <- apply_over_draws(n_draws = n_draws, n_cores = max_cores, parallel = "auto",
-                               h = h, n_var = n_var, n_p = n_p, data_ = data_, mats = mats)
+                               h = h, n_var = n_var, n_p = n_p, data_ = data_, matrices = mats)
   b_all <- vapply(per_draw, function(x) matrix(x$b_h, n_var, h), matrix(0, n_var, h)) # n_var x h x n_draws
-  M_h <- lapply(seq_len(h), function(i)
-    abind::abind(lapply(per_draw, function(x) x$M_h[[i]]), along = 3))
+  M_h_draws <- lapply(per_draw, function(x) x$M_h) # per draw: list over horizons
+
+  # shock contributions, batched per draw over all simulations:
+  # shock_h[, cnt, d, ] = sum_{tt<=cnt} t(M_{cnt-tt}) %*% eps_tt
+  # (self-contained kernel, base R only: shipped by value to PSOCK workers on Windows)
+  sim_shocks_draw <- function(d, M_h_all, eps, h, n_var) {
+    M_h_d <- M_h_all[[d]]
+    out <- array(0, dim = c(n_var, h, dim(eps)[4]))
+    for (cnt in 1:h) {
+      for (tt in 1:cnt) {
+        # shock at future period tt hits y at period cnt via the (cnt-tt)-step IRF
+        out[, cnt, ] <- out[, cnt, ] +
+          crossprod(M_h_d[[cnt - tt + 1]], eps[, tt, d, ])
+      }
+    }
+    out
+  }
+  shock_list <- apply_over_draws(n_draws = n_draws, n_cores = max_cores, parallel = "auto",
+                                 fun = sim_shocks_draw,
+                                 M_h_all = M_h_draws, eps = epsilon, h = h, n_var = n_var)
 
   for(cnt in 1:h){
     b_h<-array(b_all[, cnt, ], dim = c(1, n_var, n_draws))
-
-    fut_shocks<-array(rep(rep(rep(0,n_var),n_draws),n_sim),dim=c(1,n_var,n_draws,n_sim))
-    # for each step in h have to add up all future shocks
-    for (tt in 1:cnt){
-      tmp <- parallel::mclapply(1:n_sim, FUN = function(s) {
-        # For each simulation, apply across draws
-        sapply(1:n_draws, function(d) {
-          # shock at future period tt hits y at period cnt via the (cnt-tt)-step IRF
-          as.vector(epsilon[, tt, d, s] %*% M_h[[cnt - tt + 1]][,, d])
-        })
-      }, mc.cores = cores)
-
-      # Convert the result into an array
-      tmp <- simplify2array(tmp)
-
-      fut_shocks<-fut_shocks+ array(tmp, dim = c(1, n_var, n_draws, n_sim))
-    }
-    shock_h[,cnt,,]<-fut_shocks[1,,,]
+    for (d in 1:n_draws) shock_h[, cnt, d, ] <- shock_list[[d]][, cnt, ]
 
     hist_h[,cnt,,]<-array(rep(b_h,n_sim),dim=c(n_var,n_draws,n_sim))
     # add up b and M part (shocks)
 
-    y_h[,cnt,,]<-array(rep(b_h,n_sim),dim=c(n_var,n_draws,n_sim))+ fut_shocks[1,,,]
+    y_h[,cnt,,]<-hist_h[,cnt,,]+ shock_h[,cnt,,]
 
   }
   shock_h_flattened<-array(shock_h,dim=c(n_var,h,n_draws*n_sim))

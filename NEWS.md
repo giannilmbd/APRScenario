@@ -28,12 +28,17 @@
   computation is also restructured to build all horizons in a single pass per
   draw, which makes it substantially faster even in the default serial mode.
 
-* Windows compatibility of the remaining fork-based steps: `gen_mats()`,
-  `KL()` and the shock-simulation loop of `forc_h()` now fall back to serial
-  execution on Windows instead of erroring when more than one core is
-  requested (these steps are computationally light; the heavy draw-level
-  computation in `big_b_and_M()`/`scenarios()` is parallelized on all
-  platforms via PSOCK clusters).
+* `forc_h()` restructured like `scenarios()`: forecast matrices are built in a
+  single pass per draw and the shock simulation uses batched per-draw matrix
+  products, both parallelized over posterior draws on all platforms
+  (roughly 15x faster serially, more with several workers). Given the same
+  seed, results are identical for any `max_cores` value and backend.
+* Windows compatibility of the remaining fork-based steps: `gen_mats()` and
+  `KL()` now fall back to serial execution on Windows instead of erroring
+  when more than one core is requested (these steps are computationally
+  light; the heavy draw-level computation in
+  `big_b_and_M()`/`scenarios()`/`forc_h()` is parallelized on all platforms
+  via PSOCK clusters).
 * `DESCRIPTION` gains `URL` and `BugReports` fields.
 
 ## Authors
