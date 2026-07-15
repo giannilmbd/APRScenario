@@ -83,7 +83,7 @@ test_that("big_b_and_M matches bsvars' impulse responses; backends agree", {
                            n_cores = 2, parallel = "psock")
   expect_equal(tmp_psock, tmp, tolerance = 1e-12)
 
-  if (isTRUE(capabilities("fork"))) {
+  if (.Platform$OS.type == "unix") {
     tmp_fork <- big_b_and_M(h = hh, n_draws = nd, n_var = nv, n_p = mats$n_p,
                             data_ = mats$Z, matrices = mats,
                             n_cores = 2, parallel = "fork")

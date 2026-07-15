@@ -172,11 +172,14 @@ apply_over_draws <- function(n_draws, n_cores, parallel, h, n_var, n_p, data_, m
   n_cores <- max(1L, min(as.integer(n_cores), n_draws))
 
   if (n_cores == 1L) parallel <- "none"
+  # forking exists on all unix-alikes, never on Windows
+  # (NB: capabilities("fork") is NOT a valid test — no such capabilities() entry)
+  fork_ok <- .Platform$OS.type == "unix"
   if (parallel == "auto") {
-    parallel <- if (isTRUE(capabilities("fork"))) "fork" else "psock"
+    parallel <- if (fork_ok) "fork" else "psock"
   }
-  if (parallel == "fork" && !isTRUE(capabilities("fork"))) {
-    warning("Forking is not available on this platform (Windows); using a PSOCK cluster instead.")
+  if (parallel == "fork" && !fork_ok) {
+    warning("Forking is not available on Windows; using a PSOCK cluster instead.")
     parallel <- "psock"
   }
 
