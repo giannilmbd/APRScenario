@@ -10,6 +10,8 @@ Description: Implements the scenario analysis proposed by Antolin-Diaz,
     Petrella and Rubio-Ramirez (2021) 
     "Structural scenario analysis with SVARs" <doi:10.1016/j.jmoneco.2020.06.001>.
 License: GPL (>= 3)
+URL: https://github.com/giannilmbd/APRScenario
+BugReports: https://github.com/giannilmbd/APRScenario/issues
 Encoding: UTF-8
 Depends: 
     R (>= 4.1.0)

@@ -18,7 +18,10 @@ KL(Sigma_eps, mu_eps, h, plot_ = FALSE, max_cores = NULL)
 
 \item{plot_}{logical; if TRUE then a histogram of the KL measure is returned}
 
-\item{max_cores}{maximum number of cores to use for parallel processing (default: NULL, uses CRAN-compliant detection with Windows=1)}
+\item{max_cores}{number of workers used to parallelize over draws via forking
+(Unix/macOS; default NULL = 1 = serial). On Windows this step always
+runs serially (the computation is light; the heavy draw-level work in
+\code{\link[=big_b_and_M]{big_b_and_M()}}/\code{\link[=scenarios]{scenarios()}} is parallelized on all platforms).}
 }
 \value{
 Returns the APR 'q': ie distance from a fair binomial distribution

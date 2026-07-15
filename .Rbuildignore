@@ -5,3 +5,7 @@
 ^LICENSE\.md$
 ^.*_cache$
 
+^cran-comments\.md$
+^vignettes/APRScenario_cache$
+^vignettes/APRScenario_files$
+^vignettes/APRScenario\.html$

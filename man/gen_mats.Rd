@@ -11,7 +11,10 @@ gen_mats(posterior = NULL, specification = NULL, max_cores = 1)
 
 \item{specification}{Optional specification object (default taken from calling environment)}
 
-\item{max_cores}{maximum number of cores to use for parallel processing (default: 1 for Windows compatibility)}
+\item{max_cores}{number of workers used to parallelize over draws via forking
+(Unix/macOS; default 1 = serial). On Windows this step always runs
+serially (the computation is light; the heavy draw-level work in
+\code{\link[=big_b_and_M]{big_b_and_M()}}/\code{\link[=scenarios]{scenarios()}} is parallelized on all platforms).}
 }
 \value{
 Returns all objects necessary for scenario analysis (e.g., IRF matrix),

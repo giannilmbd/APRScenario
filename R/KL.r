@@ -7,7 +7,10 @@
 #' @param mu_eps mean of innovation
 #' @param h forecast horizon
 #' @param plot_ logical; if TRUE then a histogram of the KL measure is returned
-#' @param max_cores maximum number of cores to use for parallel processing (default: NULL, uses CRAN-compliant detection with Windows=1)
+#' @param max_cores number of workers used to parallelize over draws via forking
+#'        (Unix/macOS; default NULL = 1 = serial). On Windows this step always
+#'        runs serially (the computation is light; the heavy draw-level work in
+#'        [big_b_and_M()]/[scenarios()] is parallelized on all platforms).
 #'
 #' @returns Returns the APR 'q': ie distance from a fair binomial distribution
 #' @examples
@@ -37,13 +40,11 @@
 #' @import dplyr
 #' @importFrom ggplot2 ggplot geom_histogram aes geom_vline xlab ylab labs theme_minimal
 KL<-function(Sigma_eps,mu_eps,h,plot_=FALSE,max_cores=NULL){
-  # Default to 1 core for Windows compatibility
-  if(is.null(max_cores)) {
-    cores <- 1
-  } else {
-    cores <- max_cores
-  }
-  
+  # mclapply forks; on Windows only 1 core is supported
+  if(is.null(max_cores)) max_cores <- 1L
+  cores <- if (.Platform$OS.type == "windows") 1L else max(1L, as.integer(max_cores))
+
+
   n_var<-dim(Sigma_eps)[1]/h
   n_draws<-dim(Sigma_eps)[3]
   DKL<-parallel::mclapply(1:n_draws,FUN=function(d){

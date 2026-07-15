@@ -28,6 +28,14 @@
   computation is also restructured to build all horizons in a single pass per
   draw, which makes it substantially faster even in the default serial mode.
 
+* Windows compatibility of the remaining fork-based steps: `gen_mats()`,
+  `KL()` and the shock-simulation loop of `forc_h()` now fall back to serial
+  execution on Windows instead of erroring when more than one core is
+  requested (these steps are computationally light; the heavy draw-level
+  computation in `big_b_and_M()`/`scenarios()` is parallelized on all
+  platforms via PSOCK clusters).
+* `DESCRIPTION` gains `URL` and `BugReports` fields.
+
 ## Authors
 
 * Tito Quadri joins as package author.

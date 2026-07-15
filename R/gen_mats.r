@@ -4,7 +4,10 @@
 #'
 #' @param posterior Posterior estimation results (eg from BsvarSIGNs)
 #' @param specification Optional specification object (default taken from calling environment)
-#' @param max_cores maximum number of cores to use for parallel processing (default: 1 for Windows compatibility)
+#' @param max_cores number of workers used to parallelize over draws via forking
+#'        (Unix/macOS; default 1 = serial). On Windows this step always runs
+#'        serially (the computation is light; the heavy draw-level work in
+#'        [big_b_and_M()]/[scenarios()] is parallelized on all platforms).
 #' @returns Returns all objects necessary for scenario analysis (e.g., IRF matrix),
 #'   including: \code{M}, \code{M_inv}, \code{M_list}, \code{B}, \code{B_list},
 #'   \code{n_p}, \code{n_var}, \code{Y}, \code{X}, and \code{Z}.
@@ -43,9 +46,10 @@ gen_mats<-function(posterior=NULL, specification=NULL, max_cores=1){
   M_inv<-posterior$posterior$B # This already include Q i.e. B^{-1}=A_0^{-1}%*%Q
   #Q<-posterior$posterior$Q # Rotation matrices
   # remember to transpose
-  # Default to 1 core for Windows compatibility
-  cores <- max_cores
-  
+  # mclapply forks; on Windows only 1 core is supported
+  cores <- if (.Platform$OS.type == "windows") 1L else max(1L, as.integer(max_cores))
+
+
   M_list <- parallel::mclapply(1:dim(M_inv)[3], function(d) solve(t(M_inv[,,d])), mc.cores = cores)
   M <-  abind::abind(M_list, along = 3)
   B<-posterior$posterior$A # this is lags plus constant (in the last row... see last row of specification$data_matrices$X)
