@@ -5,7 +5,9 @@
 #' @param data_ Optional matrix of data n_var*h+1 x T. If NULL, defaults to matrices$Z
 #' @param posterior Optional posterior object (default taken from calling environment)
 #' @param matrices Optional matrices object from gen_mats() (default taken from calling environment)
-#' @param max_cores maximum number of cores to use for parallel processing (default: 1 for Windows compatibility)
+#' @param max_cores number of workers used to parallelize over posterior draws
+#'        (default 1 = serial; forked processes on Unix/macOS, PSOCK cluster on Windows;
+#'        the shock-simulation loop additionally uses forking where available)
 #' @returns a matrix of unconditional forecasts
 #' @examples
 #' \dontrun{
@@ -53,20 +55,25 @@ forc_h<-function(h=1,n_sim=200,data_=NULL,posterior=NULL,matrices=NULL,max_cores
 
   hist_h=array(rep(rep(rep(rep(0,n_var),h),n_draws),n_sim),dim=c(n_var,h,n_draws,n_sim))
 
-  # Default to 1 core for Windows compatibility
-  cores <- max_cores
-  
+  # mclapply forks; on Windows only 1 core is supported
+  cores <- if (.Platform$OS.type == "windows") 1L else max(1L, as.integer(max_cores))
+
   epsilon<-parallel::mclapply(1:n_draws,function(d)MASS::mvrnorm(n = n_sim, mu = rep(0,n_var), Sigma = diag(1,n_var)),
                               mc.cores = cores) %>% simplify2array()
 
   epsilon<-parallel::mclapply(1:h,function(i)epsilon,mc.cores=cores) %>% simplify2array()  %>%
     aperm(.,c(2,4,3,1))
 
+  # forecast-mean terms and IRFs for all horizons in one pass per draw
+  mats <- list(B_list = matrices$B_list, M = matrices$M, intercept = matrices$intercept)
+  per_draw <- apply_over_draws(n_draws = n_draws, n_cores = max_cores, parallel = "auto",
+                               h = h, n_var = n_var, n_p = n_p, data_ = data_, mats = mats)
+  b_all <- vapply(per_draw, function(x) matrix(x$b_h, n_var, h), matrix(0, n_var, h)) # n_var x h x n_draws
+  M_h <- lapply(seq_len(h), function(i)
+    abind::abind(lapply(per_draw, function(x) x$M_h[[i]]), along = 3))
 
   for(cnt in 1:h){
-    tmp<-mat_forc(h = cnt, n_draws = n_draws, n_var = n_var, n_p = n_p, data_ = data_)
-    b_h<-tmp[[1]]
-    M_h<-tmp[[2]]
+    b_h<-array(b_all[, cnt, ], dim = c(1, n_var, n_draws))
 
     fut_shocks<-array(rep(rep(rep(0,n_var),n_draws),n_sim),dim=c(1,n_var,n_draws,n_sim))
     # for each step in h have to add up all future shocks
@@ -74,8 +81,8 @@ forc_h<-function(h=1,n_sim=200,data_=NULL,posterior=NULL,matrices=NULL,max_cores
       tmp <- parallel::mclapply(1:n_sim, FUN = function(s) {
         # For each simulation, apply across draws
         sapply(1:n_draws, function(d) {
-          # Each draw returns a n_var vector
-          as.vector(epsilon[, tt, d, s] %*% M_h[[tt]][,, d])
+          # shock at future period tt hits y at period cnt via the (cnt-tt)-step IRF
+          as.vector(epsilon[, tt, d, s] %*% M_h[[cnt - tt + 1]][,, d])
         })
       }, mc.cores = cores)
 

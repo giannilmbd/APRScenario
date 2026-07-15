@@ -13,6 +13,11 @@
 #' @param Sigma_g Optional covariance matrix of non-driving shocks
 #' @param posterior Optional posterior object (default taken from calling environment)
 #' @param matrices Optional matrices object from gen_mats() (default taken from calling environment)
+#' @param n_cores Number of parallel workers used to build the forecast matrices
+#'        (default 1 = serial; NULL = physical cores minus one); see [big_b_and_M()]
+#' @param parallel Parallel backend passed to [big_b_and_M()]: \code{"auto"}
+#'        (default; fork on Unix/macOS, PSOCK on Windows), \code{"fork"},
+#'        \code{"psock"}, or \code{"none"}
 #'
 #' @return list of mu_eps, Sigma_eps, mu_y, Sigma_y, big_b, big_M, draws_used
 #' @examples
@@ -46,7 +51,9 @@ scenarios <- function(h = 3,
                      data_ = NULL,
                      g = NULL, Sigma_g = NULL,
                      posterior = NULL,
-                     matrices = NULL) {
+                     matrices = NULL,
+                     n_cores = 1,
+                     parallel = c("auto", "fork", "psock", "none")) {
   
   # Get matrices from calling environment if not provided
   if(is.null(matrices)) {
@@ -86,7 +93,8 @@ scenarios <- function(h = 3,
   n_p<-(dim(posterior$posterior$A)[2]-1)/n_var
   n_draws<-dim(posterior$posterior$B)[3]
   if(is.null(n_sample))n_sample<-n_draws
-  tmp <- big_b_and_M(h = h, n_draws = n_draws, n_var = n_var, n_p = n_p, data_ = data_)
+  tmp <- big_b_and_M(h = h, n_draws = n_draws, n_var = n_var, n_p = n_p, data_ = data_,
+                     matrices = matrices, n_cores = n_cores, parallel = parallel)
   big_b <- tmp[[1]]
   big_M <- tmp[[2]]
 

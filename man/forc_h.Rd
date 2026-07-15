@@ -24,7 +24,9 @@ forc_h(
 
 \item{matrices}{Optional matrices object from gen_mats() (default taken from calling environment)}
 
-\item{max_cores}{maximum number of cores to use for parallel processing (default: 1 for Windows compatibility)}
+\item{max_cores}{number of workers used to parallelize over posterior draws
+(default 1 = serial; forked processes on Unix/macOS, PSOCK cluster on Windows;
+the shock-simulation loop additionally uses forking where available)}
 }
 \value{
 a matrix of unconditional forecasts

@@ -60,7 +60,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -649,7 +649,7 @@ cost.</p>
 <span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>                                       <span class="at">sign_irf =</span> sr[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span>
 <span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a></span>
 <span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co"># estimate the model</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>posterior      <span class="ot">=</span> <span class="fu">estimate</span>(specification, <span class="at">S =</span> n_draws) <span class="co"># SEE FORKED VERSION FOR PARALLEL Q ROTATION DRAWS</span></span></code></pre></div>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>posterior      <span class="ot">=</span> bsvars<span class="sc">::</span><span class="fu">estimate</span>(specification, <span class="at">S =</span> n_draws) <span class="co"># SEE FORKED VERSION FOR PARALLEL Q ROTATION DRAWS</span></span></code></pre></div>
 <pre><code>## **************************************************|
 ##  bsvarSIGNs: Bayesian Structural VAR with sign,   |
 ##              zero and narrative restrictions      |

@@ -16,7 +16,9 @@ scenarios(
   g = NULL,
   Sigma_g = NULL,
   posterior = NULL,
-  matrices = NULL
+  matrices = NULL,
+  n_cores = 1,
+  parallel = c("auto", "fork", "psock", "none")
 )
 }
 \arguments{
@@ -40,6 +42,13 @@ in data_ is used as the starting point; it should not overlap with the scenario 
 \item{posterior}{Optional posterior object (default taken from calling environment)}
 
 \item{matrices}{Optional matrices object from gen_mats() (default taken from calling environment)}
+
+\item{n_cores}{Number of parallel workers used to build the forecast matrices
+(default 1 = serial; NULL = physical cores minus one); see \code{\link[=big_b_and_M]{big_b_and_M()}}}
+
+\item{parallel}{Parallel backend passed to \code{\link[=big_b_and_M]{big_b_and_M()}}: \code{"auto"}
+(default; fork on Unix/macOS, PSOCK on Windows), \code{"fork"},
+\code{"psock"}, or \code{"none"}}
 }
 \value{
 list of mu_eps, Sigma_eps, mu_y, Sigma_y, big_b, big_M, draws_used

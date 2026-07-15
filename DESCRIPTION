@@ -1,11 +1,11 @@
 Package: APRScenario
 Title: Structural Scenario Analysis for Bayesian Structural Vector Autoregression Models
-Version: 0.0.3.1
-Author: Giovanni Lombardo [aut, cre]
+Version: 0.0.4.0
+Author: Giovanni Lombardo [aut, cre], Tito Quadri [aut]
 Maintainer: Giovanni Lombardo <giannilmbd@gmail.com>
-Authors@R: 
-    person("Giovanni", "Lombardo", email = "giannilmbd@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = ""))
+Authors@R: c(
+    person("Giovanni", "Lombardo", email = "giannilmbd@gmail.com", role = c("aut", "cre")),
+    person("Tito", "Quadri", email = "quadritito@gmail.com", role = "aut"))
 Description: Implements the scenario analysis proposed by Antolin-Diaz, 
     Petrella and Rubio-Ramirez (2021) 
     "Structural scenario analysis with SVARs" <doi:10.1016/j.jmoneco.2020.06.001>.

@@ -12,7 +12,10 @@ M is reduced so that E(u\emph{u')=Sigma=(A_0}A_0')^(-1) and M_0=A_0^(-1)*Q      
 Note that the code returns conflicting notation:                           #
 B=>A_0^(-1)*Q and                                                          #
 A=>B                                                                       #
-##############################################################################}
+##############################################################################
+The recursions (Antolin-Diaz et al. 2021, Appendix A) are implemented once,
+in the internal single-draw kernel \code{mat_forc_draw()}; \code{mat_forc()},
+\code{\link[=big_b_and_M]{big_b_and_M()}} and \code{\link[=forc_h]{forc_h()}} are thin consumers of that kernel.}
 \usage{
 mat_forc(
   h = 1,
@@ -40,7 +43,8 @@ If run counterfactuals in previoius historical period (ie not forecast) must pas
 
 \item{matrices}{Optional matrices object from gen_mats() (default taken from calling environment)}
 
-\item{max_cores}{maximum number of cores to use for parallel processing (default: 1 for Windows compatibility)}
+\item{max_cores}{number of workers used to parallelize over posterior draws
+(default 1 = serial; forked processes on Unix/macOS, PSOCK cluster on Windows)}
 }
 \value{
 the big_b and big_M matrices of mean and IRF
@@ -57,6 +61,9 @@ Note that the code returns conflicting notation:                           #
 B=>A_0^(-1)*Q and                                                          #
 A=>B                                                                       #
 ##############################################################################
+The recursions (Antolin-Diaz et al. 2021, Appendix A) are implemented once,
+in the internal single-draw kernel \code{mat_forc_draw()}; \code{mat_forc()},
+\code{\link[=big_b_and_M]{big_b_and_M()}} and \code{\link[=forc_h]{forc_h()}} are thin consumers of that kernel.
 }
 \examples{
 \donttest{
