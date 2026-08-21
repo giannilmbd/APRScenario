@@ -2,11 +2,9 @@
 
 ## Bug fixes
 
-* Updated the vignette to dispatch forecasts through `bsvarSIGNs::forecast()`.
-  This is compatible with `bsvarSIGNs` 3.0, which registers
-  `PosteriorBSVARSIGN` against the `generics::forecast()` generic, while
-  avoiding the unrelated package-local generic still exported by `bsvars`
-  3.2.
+* Updated the vignette to use the `generics::forecast()` generic exported by
+  `bsvarSIGNs` 3.0 while retaining compatibility with older `bsvarSIGNs`
+  versions, which dispatch forecasts through `bsvars::forecast()`.
 
 * Fixed a critical transcription error in the moving-average (IRF) recursion of
   `mat_forc()` / `big_b_and_M()`: the code computed `M_i = sum_j M_j B_j`
