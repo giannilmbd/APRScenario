@@ -2,3 +2,8 @@
 /Meta/
 vignettes/APRScenario_cache/
 vignettes/APRScenario_files/
+
+# diagnostic/build artifacts; keep only the scripts
+checks/*
+!checks/apply_0_0_4_2.sh
+!checks/verify_bsvarSIGNs30.R

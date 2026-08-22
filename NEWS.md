@@ -1,3 +1,25 @@
+# APRScenario 0.0.4.2
+
+## Bug fixes
+
+* Vignette: removed the call to `bsvars::forecast()` and the version-dispatch
+  helper introduced in 0.0.4.1. The forecast object was never used -- the
+  vignette computes its unconditional forecast with `forc_h()` -- so the
+  vignette no longer depends on which package owns the `forecast()` generic.
+  No exported function of APRScenario calls `forecast()`. The vignette builds
+  under both `bsvarSIGNs` 2.0 and 3.0.
+
+* Vignette: removed a `dev.new()` / `grid::grid.newpage()` pair that opened a
+  graphics device during vignette building, and a
+  `Sys.setlocale("LC_TIME", "English.UTF-8")` call using a Windows-only locale
+  name that failed silently on other platforms.
+
+## Acknowledgements
+
+* Thanks to PhoenixEmik (https://github.com/PhoenixEmik) for reporting the
+  `bsvarSIGNs` 3.0 breakage and independently diagnosing its cause
+  (issue #2, pull request #3).
+
 # APRScenario 0.0.4.1
 
 ## Bug fixes
@@ -5,6 +27,10 @@
 * Updated the vignette to use the `generics::forecast()` generic exported by
   `bsvarSIGNs` 3.0 while retaining compatibility with older `bsvarSIGNs`
   versions, which dispatch forecasts through `bsvars::forecast()`.
+
+# APRScenario 0.0.4.0
+
+## Bug fixes
 
 * Fixed a critical transcription error in the moving-average (IRF) recursion of
   `mat_forc()` / `big_b_and_M()`: the code computed `M_i = sum_j M_j B_j`
