@@ -358,7 +358,13 @@ names(sr1)<-varbls
 # sr1 %>% cat(file='figures/sr_bvars.tex')
 
 
-f_bvar<-bsvars::forecast(
+forecast_bvarsign <- if ("forecast" %in% getNamespaceExports("bsvarSIGNs")) {
+  bsvarSIGNs::forecast
+} else {
+  bsvars::forecast
+}
+
+f_bvar<-forecast_bvarsign(
   posterior,
   horizon = 3,
   exogenous_forecast = NULL,

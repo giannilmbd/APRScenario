@@ -1,6 +1,10 @@
-# APRScenario 0.0.4.0
+# APRScenario 0.0.4.1
 
 ## Bug fixes
+
+* Updated the vignette to use the `generics::forecast()` generic exported by
+  `bsvarSIGNs` 3.0 while retaining compatibility with older `bsvarSIGNs`
+  versions, which dispatch forecasts through `bsvars::forecast()`.
 
 * Fixed a critical transcription error in the moving-average (IRF) recursion of
   `mat_forc()` / `big_b_and_M()`: the code computed `M_i = sum_j M_j B_j`
