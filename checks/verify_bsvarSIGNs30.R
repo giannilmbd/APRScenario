@@ -27,6 +27,23 @@ vig     <- file.path(proj, "vignettes", "APRScenario.Rmd")
 dir.create(lib30, showWarnings = FALSE, recursive = TRUE)
 
 # --- 1. install bsvarSIGNs 3.0 into the side library -----------------------
+# The tarball and the side library are gitignored, so on a fresh clone neither
+# exists; fetch the tarball from CRAN (current, then Archive once superseded).
+if (!file.exists(tarball) && !dir.exists(file.path(lib30, "bsvarSIGNs"))) {
+  urls <- c("https://cran.r-project.org/src/contrib/bsvarSIGNs_3.0.tar.gz",
+            paste0("https://cran.r-project.org/src/contrib/Archive/",
+                   "bsvarSIGNs/bsvarSIGNs_3.0.tar.gz"))
+  for (u in urls) {
+    ok <- tryCatch({ utils::download.file(u, tarball, mode = "wb", quiet = TRUE); TRUE },
+                   error = function(e) FALSE, warning = function(w) FALSE)
+    if (ok && file.exists(tarball) && file.size(tarball) > 1e5) break
+    if (file.exists(tarball)) unlink(tarball)
+  }
+  if (!file.exists(tarball))
+    stop("could not download bsvarSIGNs 3.0; fetch it manually into ", tarball)
+  message("Downloaded ", tarball)
+}
+
 if (!dir.exists(file.path(lib30, "bsvarSIGNs"))) {
   message("Installing bsvarSIGNs 3.0 into ", lib30, " ...")
   install.packages(tarball, lib = lib30, repos = NULL, type = "source",

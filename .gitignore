@@ -7,3 +7,4 @@ vignettes/APRScenario_files/
 checks/*
 !checks/apply_0_0_4_2.sh
 !checks/verify_bsvarSIGNs30.R
+!checks/STATUS.md
