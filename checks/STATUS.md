@@ -1,6 +1,6 @@
 # APRScenario — where things stand
 
-Last updated: 2026-08-26. Kept in `checks/`, which is in `.Rbuildignore`, so it
+Last updated: 2026-08-26 (submitted to CRAN). Kept in `checks/`, which is in `.Rbuildignore`, so it
 never ships to CRAN. This file exists so the state travels with the repo rather
 than living on one machine.
 
@@ -9,8 +9,10 @@ than living on one machine.
 - `master` = **0.0.4.2**, pushed (latest `41715f7`).
 - `tar-package` = `a68f858`, now carries `APRScenario_0.0.4.2.tar.gz`
   alongside the older tarballs.
-- The CRAN fix is **done and verified**. **The submission is the only thing
-  left**, and it is the one item with a clock on it.
+- **0.0.4.2 was submitted to CRAN on 2026-08-26.** Awaiting the outcome: the
+  maintainer confirmation email must be clicked for the submission to go live,
+  then CRAN either auto-accepts or a volunteer replies. If they come back with
+  questions, the reasoning is all in this file and in `cran-comments.md`.
 - CRAN deadline: **2026-09-11**. Miss it and the package is archived.
 
 ### CRAN dashboard is churning (still checking published 0.0.4.0)
@@ -81,14 +83,9 @@ The two NOTEs are local-environment artifacts, both already explained in
 
 ## What is left
 
-1. **Submit** at https://cran.r-project.org/submit.html — the only item with a
-   deadline. File: `APRScenario_0.0.4.2.tar.gz` at the repo root (built and
-   checked; `cran-comments.md` and `checks/` are `.Rbuildignore`d, so edits to
-   those do not require a rebuild). Paste `cran-comments.md` into the comment
-   box. A confirmation email goes to the Maintainer address — the submission is
-   not live until that link is clicked, so only the maintainer can complete it.
-2. **Reply to PhoenixEmik** on issue #2 / PR #3 (see Attribution below).
-   Needs GitHub write; `gh` is not installed on the Linux box.
+1. ~~Submit to CRAN~~ — **done 2026-08-26**. Watch for the CRAN reply.
+2. **Reply to PhoenixEmik** on issue #2 / PR #3 — draft text below under
+   Attribution. Needs GitHub write; `gh` is not installed on the Linux box.
 3. **Optional, and I would skip it:** `devtools::check_win_devel(".")`. It
    checks against R-devel *the language*, but win-builder is Windows and
    Windows r-devel is green, so it will probably install `bsvarSIGNs` 2.0 and
@@ -106,6 +103,24 @@ reached the same diagnosis, then opened PR #3 with a working fix that selected
 the generic at runtime. PR #3 was **merged** (`16c1719`) so their commits are in
 the history; 0.0.4.2 then removed the call altogether, which made their shim
 unnecessary. They are credited in `NEWS.md` under 0.0.4.2 Acknowledgements.
+
+### Draft reply to post on issue #2
+
+> Thanks for the report and the fix — you had the diagnosis right, and fast.
+>
+> I've merged the PR, then followed up with a commit that removes the
+> `forecast()` call altogether: `f_bvar` was assigned but never used, and the
+> vignette's unconditional forecast already comes from `forc_h()`. That makes
+> the version-dispatch helper unnecessary, so the vignette no longer depends on
+> which package owns the generic at all. Released as 0.0.4.2 and submitted to
+> CRAN; you're credited in NEWS.md.
+>
+> For anyone finding this later: the cause is that bsvarSIGNs 3.0 registers
+> `forecast.PosteriorBSVARSIGN` on `generics::forecast` rather than on
+> `bsvars::forecast`, so a qualified `bsvars::forecast()` call stops
+> dispatching. It surfaces on a given CRAN flavour as soon as that machine
+> installs 3.0 — which is why the affected flavours shifted from day to day
+> rather than staying put.
 
 Note: Tomasz Woźniak (bsvarSIGNs author) advised on issue #2 that this would
 resolve itself and to wait. The evidence did not support that — the failure
