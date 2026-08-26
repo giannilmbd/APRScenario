@@ -1,14 +1,26 @@
 # APRScenario — where things stand
 
-Last updated: 2026-08-22. Kept in `checks/`, which is in `.Rbuildignore`, so it
+Last updated: 2026-08-26. Kept in `checks/`, which is in `.Rbuildignore`, so it
 never ships to CRAN. This file exists so the state travels with the repo rather
 than living on one machine.
 
 ## Current position
 
-- `master` = **0.0.4.2**, pushed as `4f5d60f`.
-- The CRAN fix is **done and verified**, but **not yet submitted**.
+- `master` = **0.0.4.2**, pushed (latest `41715f7`).
+- `tar-package` = `a68f858`, now carries `APRScenario_0.0.4.2.tar.gz`
+  alongside the older tarballs.
+- The CRAN fix is **done and verified**. **The submission is the only thing
+  left**, and it is the one item with a clock on it.
 - CRAN deadline: **2026-09-11**. Miss it and the package is archived.
+
+### CRAN dashboard is churning (still checking published 0.0.4.0)
+
+ERROR count by day: 08-21 two (fedora-clang, fedora-gcc) -> 08-22 three
+(+ debian-gcc) -> 08-24 two (r-release-linux, r-oldrel-windows) -> 08-26 one
+(r-release-linux only). `bsvarSIGNs` stayed at 3.0 throughout, so this is CRAN
+machines churning, not a dependency fix. Do not wait it out: one ERROR on
+2026-09-11 is enough to archive the package, and the bug is real for any user
+who has bsvarSIGNs 3.0 regardless of the table's colour.
 
 ## What was wrong
 
@@ -69,16 +81,23 @@ The two NOTEs are local-environment artifacts, both already explained in
 
 ## What is left
 
-1. **Optional:** `Rscript -e 'devtools::check_win_devel(".")'` — checks against
-   R-devel *the language*. It will probably NOT reproduce the bug, because
-   win-builder is Windows and Windows r-devel was passing (its `bsvarSIGNs`
-   binary was still 2.0). Result is emailed to the Maintainer address.
-2. **Submit** at https://cran.r-project.org/submit.html, pasting
-   `cran-comments.md`.
-3. **Reply to PhoenixEmik** on issue #2 / PR #3 (see Attribution below).
-4. After release, put the built `.tar.gz` on the **`tar-package`** branch —
-   that branch is tarball-only, and README points users to it. The tarball does
-   not belong on `master`.
+1. **Submit** at https://cran.r-project.org/submit.html — the only item with a
+   deadline. File: `APRScenario_0.0.4.2.tar.gz` at the repo root (built and
+   checked; `cran-comments.md` and `checks/` are `.Rbuildignore`d, so edits to
+   those do not require a rebuild). Paste `cran-comments.md` into the comment
+   box. A confirmation email goes to the Maintainer address — the submission is
+   not live until that link is clicked, so only the maintainer can complete it.
+2. **Reply to PhoenixEmik** on issue #2 / PR #3 (see Attribution below).
+   Needs GitHub write; `gh` is not installed on the Linux box.
+3. **Optional, and I would skip it:** `devtools::check_win_devel(".")`. It
+   checks against R-devel *the language*, but win-builder is Windows and
+   Windows r-devel is green, so it will probably install `bsvarSIGNs` 2.0 and
+   never exercise the failing combination. `checks/verify_bsvarSIGNs30.R` is
+   the stronger evidence and already passes.
+
+**Done:** `tar-package` was updated on 2026-08-26 (`a68f858`). That branch is
+refreshed from master as work lands, not only at release — its own history
+("Refresh 0.0.4.0 tarball from master ...") shows the convention.
 
 ## Attribution
 
