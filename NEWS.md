@@ -1,3 +1,17 @@
+# APRScenario 0.0.5.0
+
+## New features
+
+* `wz_posterior()`: the parameter posterior updated by the scenario conditions,
+  p(theta | Y, conditions), as in Waggoner and Zha (1999) and Algorithm 1 of
+  Antolin-Diaz, Petrella and Rubio-Ramirez (2021), computed from the existing
+  posterior draws without re-estimation. Methods: `"hard"` (importance weights
+  N(f; Cb, C Sigma_y C')), `"noisy"` (conditions as a noisy observation of the
+  path), and `"apr"` (Algorithm 1 with the parameter step done by resampling the
+  draws; it covers density conditions and restrictions on shocks). Reports
+  the effective sample size of the weights, the parameter Kullback-Leibler
+  divergence, and the joint divergence of parameters and path.
+
 # APRScenario 0.0.4.2
 
 ## Bug fixes

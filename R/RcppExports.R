@@ -9,3 +9,11 @@ scenarios_core <- function(big_b_list, big_M_list, C_hat_list, D_list, D_ast_lis
     .Call(`_APRScenario_scenarios_core`, big_b_list, big_M_list, C_hat_list, D_list, D_ast_list, f_hat_list, Omega_hat_list)
 }
 
+wz_prepare_core <- function(big_M) {
+    .Call(`_APRScenario_wz_prepare_core`, big_M)
+}
+
+wz_sirg_core <- function(b, W, logdet, mu_y, F, n_iter, burn, start) {
+    .Call(`_APRScenario_wz_sirg_core`, b, W, logdet, mu_y, F, n_iter, burn, start)
+}
+

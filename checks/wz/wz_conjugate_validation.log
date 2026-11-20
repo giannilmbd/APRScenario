@@ -1,0 +1,36 @@
+WZ conjugate validation, 2026-11-20 11:44:55, seed 20261120
+n=2 h=4 T=80; condition on variable 1, f = mean + 1.5 sd; Omega = 0.25 sd^2
+f = 3.614 3.718 3.734 3.721
+check0 fc_moments vs simulation: max z(mean) = 1.22 (tol 4); max rel cov err = 0.0032 (tol 0.02)
+
+=== case hard (type hard, Omega 0) ===
+GIBBS done in 18 s
+non-vacuity: max z(GIBBS vs p(theta|Y)) over parameters = 87.6 -> PASS
+IS:   ESS = 71447 of 100000 (71.4%); param KL = 0.188; max z vs GIBBS = 2.29 -> PASS
+SIRG: done in 540 s; per-step ESS median 12291 (min 419) of 20000; max z vs GIBBS = 2.95 -> PASS
+E[mu_y var2] by horizon  p(theta|Y): 1.192 1.551 1.687 1.710
+                         GIBBS:      1.175 1.531 1.670 1.708
+
+=== case noisy (type noisy, Omega diag) ===
+GIBBS done in 18 s
+non-vacuity: max z(GIBBS vs p(theta|Y)) over parameters = 65.4 -> PASS
+IS:   ESS = 78044 of 100000 (78.0%); param KL = 0.137; max z vs GIBBS = 2.10 -> PASS
+SIRG: done in 509 s; per-step ESS median 12721 (min 255) of 20000; max z vs GIBBS = 3.92 -> PASS
+E[mu_y var2] by horizon  p(theta|Y): 1.158 1.497 1.628 1.639
+                         GIBBS:      1.144 1.483 1.621 1.646
+
+=== case apr (type apr, Omega diag) ===
+GIBBS done in 18 s
+non-vacuity: max z(GIBBS vs p(theta|Y)) over parameters = 66.6 -> PASS
+SIRG: done in 496 s; per-step ESS median 11716 (min 381) of 20000; max z vs GIBBS = 2.26 -> PASS
+E[mu_y var2] by horizon  p(theta|Y): 1.192 1.551 1.687 1.710
+                         GIBBS:      1.174 1.531 1.671 1.708
+
+=== case apr_DDt (type apr, Omega D D') ===
+GIBBS done in 18 s
+non-vacuity: max z(GIBBS vs p(theta|Y)) over parameters = 66.0 -> PASS
+SIRG: done in 492 s; per-step ESS median 10594 (min 2) of 20000; max z vs GIBBS = 2.16 -> PASS
+E[mu_y var2] by horizon  p(theta|Y): 1.192 1.551 1.687 1.710
+                         GIBBS:      1.174 1.530 1.669 1.706
+
+OVERALL: PASS

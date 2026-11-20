@@ -615,3 +615,66 @@ q<-KL(Sigma_eps,mu_eps,h,plot_ = T)
 hist(q[[1]],main='KL measure (ref value 0.5)')
 
 ```
+
+## Conditions as information about the parameters
+
+The distributions above are derived for given parameters $\theta=(A,B)$ and then averaged over the posterior $p(\theta\mid Y)$. Waggoner and Zha (1999) and APR (Algorithm 1) define the conditional forecast through the joint posterior $p(\tilde y_{T+1,T+h},\theta\mid Y,SR)$, in which the restrictions $SR$ also update $\theta$. APR draw from it with a Gibbs sampler that alternates
+
+1. $\theta\sim p(\theta\mid Y,\tilde y_{T+1,T+h})$, the posterior on the sample extended by the future path;
+2. $\tilde y_{T+1,T+h}\sim\mathcal N(\mu_y,\Sigma_y)$ given $\theta$, the scenario distribution derived above.
+
+By Bayes' rule
+
+$$
+p(\theta\mid Y,\tilde y_{T+1,T+h})\propto p(\theta\mid Y)\,\mathcal N\left(\tilde y_{T+1,T+h};\,b_{T+1,T+h},\,M^{\prime}M\right),
+$$
+
+so step 1 is carried out by resampling the existing posterior draws $\theta_j$ with weights proportional to the unconditional forecast density of the current path. `wz_posterior(method = "apr")` runs this sampler on the output of `scenarios()` and returns the marginal posterior weight $\tilde w_j$ of each draw. It applies to all the restrictions handled by `scenarios()`, including density conditions and restrictions on shocks.
+
+For conditions on observables the weights have closed forms. Under the hard condition $C\tilde y_{T+1,T+h}=f_{T+1,T+h}$,
+
+$$
+\tilde w_j\propto\mathcal N\left(f_{T+1,T+h};\,Cb_{T+1,T+h}^{(j)},\,D_jD_j^{\prime}\right),
+$$
+
+and when the path is a noisy observation $f_{T+1,T+h}=C\tilde y_{T+1,T+h}+\eta$, $\eta\sim\mathcal N(0,\Omega)$,
+
+$$
+\tilde w_j\propto\mathcal N\left(f_{T+1,T+h};\,Cb_{T+1,T+h}^{(j)},\,D_jD_j^{\prime}+\Omega\right)
+$$
+
+(`method = "hard"` and `method = "noisy"`).
+
+Three diagnostics are reported. The effective sample size $1/\sum_j\tilde w_j^2$ measures how many draws carry the reweighted posterior. The divergence of the updated parameter posterior from $p(\theta\mid Y)$ is $\sum_j\tilde w_j\log(N\tilde w_j)$. By the chain rule the divergence of the joint distribution of parameters and shocks from its unconditional counterpart is
+
+$$
+D_{KL}^{joint}=\sum_j\tilde w_j\log(N\tilde w_j)+\sum_j\tilde w_j\,D_{KL}^{(j)},
+$$
+
+where $D_{KL}^{(j)}$ is the per-draw divergence of the scenario from the unconditional forecast computed above. It is infinite under hard conditions, whose conditional distribution is degenerate.
+
+```{r Waggoner-Zha-posterior, fig.show='hide'}
+set.seed(1)
+wz <- wz_posterior(tmp, method = "apr", h = h, n_iter = 2000, burn = 200)
+c(ESS = wz$ess, N = length(wz$weights), KL_param = wz$kl_param, KL_joint = wz$kl_joint)
+
+# noisy observation of the path; Omega is a quarter of the average
+# unconditional forecast variance of the conditioned variable
+pos <- obs + n_var * (0:(h - 1))
+v_unc <- rowMeans(apply(big_M, 3, function(M) diag(crossprod(M))[pos]))
+wz_noisy <- wz_posterior(tmp, method = "noisy", h = h, obs = obs, path = path,
+                         Omega = diag(0.25 * v_unc, h))
+c(ESS = wz_noisy$ess, KL_param = wz_noisy$kl_param, KL_joint = wz_noisy$kl_joint)
+
+# conditional forecasts under the updated posterior
+y_h_wz <- simulate_conditional_forecasts(mu_y = wz$mu_y_resampled,
+                                         Sigma_y = wz$Sigma_y_resampled,
+                                         varnames = varbls, n_sim = n_sim)
+cmp <- data.frame(
+  state = rownames(y_h),
+  median_given_theta = apply(y_h, 1, median),
+  median_updated = apply(y_h_wz, 1, median),
+  iqr_given_theta = apply(y_h, 1, IQR),
+  iqr_updated = apply(y_h_wz, 1, IQR))
+knitr::kable(cmp, digits = 3, row.names = FALSE)
+```

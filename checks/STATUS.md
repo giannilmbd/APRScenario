@@ -1,10 +1,22 @@
 # APRScenario — where things stand
 
-Last updated: 2026-08-26 (submitted to CRAN). Kept in `checks/`, which is in `.Rbuildignore`, so it
+Last updated: 2026-11-20 (0.0.5.0 ready to submit). Kept in `checks/`, which is in `.Rbuildignore`, so it
 never ships to CRAN. This file exists so the state travels with the repo rather
 than living on one machine.
 
-## Current position
+## Current position (2026-11-20)
+
+- CRAN has **0.0.4.2** (published 2026-08-26 08:50 UTC).
+- `master` = **0.0.5.0**, committed locally, not pushed: new `wz_posterior()`
+  (Waggoner-Zha / APR Algorithm 1 parameter posterior), vignette section,
+  tests. Validation ledger: `checks/VALIDATION.md`, scripts in `checks/wz/`.
+- `R CMD check --as-cran --run-donttest` on 0.0.5.0 (bsvars 4.0, bsvarSIGNs
+  3.0 from the side library `checks/lib_wz`): 0 ERRORs, 0 WARNINGs, 2 NOTEs
+  (the same local ones as below). Log: `checks/check_0_0_5_0.log`.
+- Left: push, put `APRScenario_0.0.5.0.tar.gz` on `tar-package`, submit to
+  CRAN. Optional later: compare against the APR (2021) applications.
+
+## Earlier position (0.0.4.2, 2026-08-26)
 
 - `master` = **0.0.4.2**, pushed (latest `41715f7`).
 - `tar-package` = `a68f858`, now carries `APRScenario_0.0.4.2.tar.gz`

@@ -1,0 +1,27 @@
+wz_posterior package validation, 2026-11-20 12:25:04; N = 20000 draws
+forecast means b (package vs oracle)                       5.81e-16 (tol 1e-08) PASS
+forecast covariance M'M (package vs oracle)                8.34e-16 (tol 1e-08) PASS
+scenarios() mu_y vs oracle, APR apr                        1.55e-15 (tol 1e-08) PASS
+scenarios() Sigma_y vs oracle, APR apr                     1.02e-14 (tol 1e-08) PASS
+scenarios() mu_y vs oracle, APR ddt                        1.55e-15 (tol 1e-08) PASS
+scenarios() Sigma_y vs oracle, APR ddt                     8.34e-16 (tol 1e-08) PASS
+weights vs oracle, hard                                    8.67e-15 (tol 1e-08) PASS
+per-draw mu_y vs oracle, hard                              5.95e-16 (tol 1e-08) PASS
+per-draw Sigma_y vs oracle, hard                           2.22e-15 (tol 1e-08) PASS
+hard per-draw mu_y vs scenarios(Sigma_g = 0)               1.55e-15 (tol 1e-08) PASS
+kl_param formula, hard                                     0.00e+00 (tol 1e-08) PASS
+wz_posterior hard:                                         ESS 14315 (72%), kl_param 0.187, kl_joint Inf
+posterior means vs exact Gibbs, hard (max z)               1.67e+00 (tol 4e+00) PASS
+weights vs oracle, noisy                                   5.42e-15 (tol 1e-08) PASS
+per-draw mu_y vs oracle, noisy                             3.85e-16 (tol 1e-08) PASS
+per-draw Sigma_y vs oracle, noisy                          1.78e-15 (tol 1e-08) PASS
+kl_param formula, noisy                                    2.78e-17 (tol 1e-08) PASS
+kl_draw y-space vs eps-space (APR eq. 16), noisy           1.01e-15 (tol 1e-08) PASS
+wz_posterior noisy:                                        ESS 15622 (78%), kl_param 0.137, kl_joint 2.805
+posterior means vs exact Gibbs, noisy (max z)              1.63e+00 (tol 4e+00) PASS
+wz_posterior apr (apr), 5000 it:                           ESS 15062, step ESS median 11713, kl_param 0.159, kl_joint 2.794
+posterior means vs exact Gibbs, apr (max z, 25 reps)       2.49e+00 (tol 4e+00) PASS
+wz_posterior apr (apr_DDt), 5000 it:                       ESS 13794, step ESS median 10534, kl_param 0.178, kl_joint 1.742
+kl_draw = mu_eps'mu_eps / 2 under Omega = D D'             2.86e-16 (tol 1e-08) PASS
+posterior means vs exact Gibbs, apr_DDt (max z, 25 reps)   2.56e+00 (tol 4e+00) PASS
+OVERALL: PASS

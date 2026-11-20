@@ -8,3 +8,8 @@ checks/*
 !checks/apply_0_0_4_2.sh
 !checks/verify_bsvarSIGNs30.R
 !checks/STATUS.md
+!checks/VALIDATION.md
+!checks/wz/
+
+# Claude project memory (synced via Dropbox, not part of the package)
+memory/

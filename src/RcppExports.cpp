@@ -47,10 +47,41 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// wz_prepare_core
+List wz_prepare_core(const arma::cube& big_M);
+RcppExport SEXP _APRScenario_wz_prepare_core(SEXP big_MSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::cube& >::type big_M(big_MSEXP);
+    rcpp_result_gen = Rcpp::wrap(wz_prepare_core(big_M));
+    return rcpp_result_gen;
+END_RCPP
+}
+// wz_sirg_core
+List wz_sirg_core(const arma::mat& b, const arma::cube& W, const arma::vec& logdet, const arma::mat& mu_y, const arma::cube& F, int n_iter, int burn, int start);
+RcppExport SEXP _APRScenario_wz_sirg_core(SEXP bSEXP, SEXP WSEXP, SEXP logdetSEXP, SEXP mu_ySEXP, SEXP FSEXP, SEXP n_iterSEXP, SEXP burnSEXP, SEXP startSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type b(bSEXP);
+    Rcpp::traits::input_parameter< const arma::cube& >::type W(WSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type logdet(logdetSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type mu_y(mu_ySEXP);
+    Rcpp::traits::input_parameter< const arma::cube& >::type F(FSEXP);
+    Rcpp::traits::input_parameter< int >::type n_iter(n_iterSEXP);
+    Rcpp::traits::input_parameter< int >::type burn(burnSEXP);
+    Rcpp::traits::input_parameter< int >::type start(startSEXP);
+    rcpp_result_gen = Rcpp::wrap(wz_sirg_core(b, W, logdet, mu_y, F, n_iter, burn, start));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_APRScenario_full_scenarios_core", (DL_FUNC) &_APRScenario_full_scenarios_core, 9},
     {"_APRScenario_scenarios_core", (DL_FUNC) &_APRScenario_scenarios_core, 7},
+    {"_APRScenario_wz_prepare_core", (DL_FUNC) &_APRScenario_wz_prepare_core, 1},
+    {"_APRScenario_wz_sirg_core", (DL_FUNC) &_APRScenario_wz_sirg_core, 8},
     {NULL, NULL, 0}
 };
 
