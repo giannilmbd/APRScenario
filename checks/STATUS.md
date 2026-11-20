@@ -7,14 +7,14 @@ than living on one machine.
 ## Current position (2026-11-20)
 
 - CRAN has **0.0.4.2** (published 2026-08-26 08:50 UTC).
-- `master` = **0.0.5.0**, committed locally, not pushed: new `wz_posterior()`
+- `master` = **0.0.5.0** (`47f9262`), pushed: new `wz_posterior()`
   (Waggoner-Zha / APR Algorithm 1 parameter posterior), vignette section,
   tests. Validation ledger: `checks/VALIDATION.md`, scripts in `checks/wz/`.
 - `R CMD check --as-cran --run-donttest` on 0.0.5.0 (bsvars 4.0, bsvarSIGNs
   3.0 from the side library `checks/lib_wz`): 0 ERRORs, 0 WARNINGs, 2 NOTEs
   (the same local ones as below). Log: `checks/check_0_0_5_0.log`.
-- Left: push, put `APRScenario_0.0.5.0.tar.gz` on `tar-package`, submit to
-  CRAN. Optional later: compare against the APR (2021) applications.
+- `tar-package` = `f5effcf`, carries `APRScenario_0.0.5.0.tar.gz`.
+- Left: submit 0.0.5.0 to CRAN (web form; `cran-comments.md` is ready). Optional later: compare against the APR (2021) applications.
 
 ## Earlier position (0.0.4.2, 2026-08-26)
 
