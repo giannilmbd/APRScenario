@@ -1,0 +1,45 @@
+wz_nkdata_check  2026-11-20 19:10:27
+APRScenario 0.0.5.0, bsvars 4.0, bsvarSIGNs 3.0
+S = 5000 posterior draws, R = 25 apr replications of 2000 iterations (+200 burn-in)
+estimation: 8.0 s; bsvarSIGNs ess field: 5000
+vignette path (inflation): 1.103 1.748 1.405 1.183
+posterior mean forecast:   1.195 1.275 1.380 1.425
+unconditional forecast sd: 0.859 1.053 1.219 1.344
+
+delta = 0  path = 1.103 1.748 1.405 1.183
+  oracle ESS 4865.6 of 5000 (97.3%); KL_param 0.0137
+  apr: mean step-1 ESS 3867.0; mean ESS of averaged weights 4865.4; TV(avg apr, oracle) 0.0012; 7.1 s
+  max |z| over 59 statistics = 2.79 (A19): PASS
+  non-vacuity: max z of oracle vs unweighted A means = 2.0
+  shift of conditional means of free variables (updated - given theta): max |.| 0.0033
+    GDP h1..h4: +0.0002 -0.0003 -0.0020 -0.0014
+    i   h1..h4: -0.0006 -0.0018 -0.0027 -0.0033
+
+delta = 1  path = 1.962 2.801 2.624 2.527
+  oracle ESS 4658.6 of 5000 (93.2%); KL_param 0.0368
+  apr: mean step-1 ESS 3576.4; mean ESS of averaged weights 4658.7; TV(avg apr, oracle) 0.0008; 7.3 s
+  max |z| over 59 statistics = 1.47 (A24): PASS
+  non-vacuity: max z of oracle vs unweighted A means = 10.9
+  shift of conditional means of free variables (updated - given theta): max |.| 0.0091
+    GDP h1..h4: -0.0091 -0.0050 -0.0009 +0.0066
+    i   h1..h4: -0.0041 -0.0071 -0.0088 -0.0074
+
+delta = 2  path = 2.821 3.855 3.843 3.871
+  oracle ESS 3790.5 of 5000 (75.8%); KL_param 0.1479
+  apr: mean step-1 ESS 2661.0; mean ESS of averaged weights 3791.2; TV(avg apr, oracle) 0.0012; 7.3 s
+  max |z| over 59 statistics = 2.56 (A34): PASS
+  non-vacuity: max z of oracle vs unweighted A means = 19.0
+  shift of conditional means of free variables (updated - given theta): max |.| 0.0295
+    GDP h1..h4: -0.0295 -0.0208 -0.0067 +0.0155
+    i   h1..h4: -0.0140 -0.0222 -0.0267 -0.0215
+
+delta = 3  path = 3.680 4.908 5.062 5.215
+  oracle ESS 2135.1 of 5000 (42.7%); KL_param 0.4601
+  apr: mean step-1 ESS 1331.6; mean ESS of averaged weights 2135.1; TV(avg apr, oracle) 0.0022; 7.5 s
+  max |z| over 59 statistics = 2.29 (A27): PASS
+  non-vacuity: max z of oracle vs unweighted A means = 20.1
+  shift of conditional means of free variables (updated - given theta): max |.| 0.0717
+    GDP h1..h4: -0.0717 -0.0601 -0.0258 +0.0224
+    i   h1..h4: -0.0337 -0.0526 -0.0610 -0.0488
+
+OVERALL: PASS

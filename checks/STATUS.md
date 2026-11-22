@@ -1,12 +1,12 @@
 # APRScenario — where things stand
 
-Last updated: 2026-11-20 (0.0.5.0 ready to submit). Kept in `checks/`, which is in `.Rbuildignore`, so it
-never ships to CRAN. This file exists so the state travels with the repo rather
-than living on one machine.
+Last updated: 2026-11-21 (0.0.5.0 accepted on CRAN). Kept in `checks/`, which
+is in `.Rbuildignore`, so it never ships to CRAN. This file exists so the state
+travels with the repo rather than living on one machine.
 
-## Current position (2026-11-20)
+## Current position (2026-11-21)
 
-- CRAN has **0.0.4.2** (published 2026-08-26 08:50 UTC).
+- CRAN has **0.0.5.0**, accepted 2026-11-21 (submitted 2026-11-20).
 - `master` = **0.0.5.0** (`47f9262`), pushed: new `wz_posterior()`
   (Waggoner-Zha / APR Algorithm 1 parameter posterior), vignette section,
   tests. Validation ledger: `checks/VALIDATION.md`, scripts in `checks/wz/`.
@@ -14,7 +14,33 @@ than living on one machine.
   3.0 from the side library `checks/lib_wz`): 0 ERRORs, 0 WARNINGs, 2 NOTEs
   (the same local ones as below). Log: `checks/check_0_0_5_0.log`.
 - `tar-package` = `f5effcf`, carries `APRScenario_0.0.5.0.tar.gz`.
-- Left: submit 0.0.5.0 to CRAN (web form; `cran-comments.md` is ready). Optional later: compare against the APR (2021) applications.
+- Real-data check of `wz_posterior` (NKdata, 5,000 bsvarSIGNs draws, inflation
+  path shifted 0-3 forecast sd): apr sampler matches the closed-form hard
+  weights, max z 2.79, ESS 97% down to 43%. `checks/wz/wz_nkdata_check.R`.
+- The JME / Matlab comparison with APR (2021) was dropped by the maintainer
+  (2026-11-20).
+
+## Next iteration (improvements noted after 0.0.5.0)
+
+1. `wz_posterior()`: warn when the ESS of the weights (and, for `"apr"`, the
+   mean step-1 ESS) falls below a set fraction of N. Add a help-page paragraph:
+   the method resamples the existing draws, so it needs N large relative to
+   how informative the conditions are; a collapsed ESS means re-estimating
+   with more draws.
+2. Validate the low-ESS regime: compare resampling against exact re-estimation
+   (conjugate Gibbs) when ESS is a few percent (extreme paths or small N).
+   Current checks stop at ESS 43% (real data) and 71% (conjugate).
+3. Validate structural scenarios (shock restrictions) in `wz_posterior(method =
+   "apr")`. No closed form; needs an exact Gibbs with Q (APR Appendix D:
+   NIW + uniform Q + accept-reject on signs) on a small SVAR.
+4. Optional independent check of `scenarios()`: per-draw comparison with
+   APR-lineage Matlab `DrawConditionalForecast.m` on identical draws
+   (location in the project memory, `aprscenario-waggoner-zha`). The current
+   per-draw oracle was written in-house.
+5. Untrack build products `src/*.o` and `src/*.so` (tracked in git, show as
+   modified after every build); add them to `.gitignore`.
+6. Vignette: `n_draws = 200` is illustrative; consider stating the draw count
+   needed for `wz_posterior` output to be used in practice.
 
 ## Earlier position (0.0.4.2, 2026-08-26)
 

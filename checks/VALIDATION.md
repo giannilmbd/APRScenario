@@ -34,6 +34,17 @@ weight degeneracy in larger systems. Rows for the package functions follow.
 | 2026-11-20 | `wz_posterior` apr (C++ `wz_sirg_core`), diagonal Omega and D D'; standard errors from 25 independent replications of 1,000 iterations | exact Gibbs | max z < 4 | PASS: 2.49, 2.56 | same |
 | 2026-11-20 | `wz_posterior` apr, kl_draw under D D' | mu_eps' mu_eps / 2 | < 1e-8 | PASS: 2.9e-16 | same |
 
-Not covered: real bsvarSIGNs output (bsvars and bsvarSIGNs are not installed on
-the machine that ran these checks), structural scenarios with shock
-restrictions, and systems larger than n = 2, h = 4.
+
+## Real bsvarSIGNs output
+
+| Date | Estimator | Oracle | Tolerance | Result | Script / log |
+|---|---|---|---|---|---|
+| 2026-11-20 | `wz_posterior` apr (APR Algorithm 1, step 1 by resampling), hard conditions on inflation; NKdata vignette SVAR (3 variables, p = 4, sign restrictions), 5,000 bsvarSIGNs 3.0 draws, h = 4; path = vignette path + delta x forecast sd, delta = 0..3; 59 statistics (b, A, conditional means of free variables); SE from 25 replications of 2,000 iterations | `wz_posterior` hard: closed-form weights on the same draws | max z < 4 per delta | PASS: 2.79, 1.47, 2.56, 2.29; oracle ESS 97%, 93%, 76%, 43% | `wz/wz_nkdata_check.R`, `.log` |
+
+Non-vacuity: the oracle's A means differ from the unweighted p(theta | Y) means
+by z = 2.0, 10.9, 19.0, 20.1 for delta = 0..3, so the comparison discriminates
+for delta >= 1.
+
+Not covered: structural scenarios with shock restrictions, and the accuracy of
+resampling against full re-estimation when the conditions push the weights
+below a few percent ESS (the conjugate checks reach N = 20,000 and ESS >= 71%).
